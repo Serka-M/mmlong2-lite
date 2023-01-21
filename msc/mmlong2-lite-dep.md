@@ -1,0 +1,21 @@
+### Tools and systems used by mmlong2-lite
+
+* [Snakemake](https://snakemake.readthedocs.io/en/stable) 
+* [Singularity](https://docs.sylabs.io/guides/latest/user-guide)    
+* [Conda](https://docs.conda.io/projects/conda) 
+* [R](https://www.r-project.org)   
+* [Flye](https://github.com/fenderglass/Flye)
+* [Minimap2](https://github.com/lh3/minimap2)
+* [Samtools](https://github.com/samtools/samtools)
+* [SeqKit](https://github.com/shenwei356/seqkit)
+* [Medaka](https://github.com/nanoporetech/medaka)
+* [Tiara](https://github.com/ibe-uw/tiara)
+* [MetaBat2](https://bitbucket.org/berkeleylab/metabat/src/master)
+* [SemiBin](https://github.com/BigDataBiology/SemiBin)
+* [GraphMB](https://github.com/MicrobialDarkMatter/GraphMB)
+* [DAS Tool](https://github.com/cmks/DAS_Tool)
+* [CheckM2](https://github.com/chklovski/CheckM2)
+* [Quast](https://github.com/ablab/quast)
+* [CoverM](https://github.com/wwood/CoverM)
+
+[//]: # (Written by Mantas Sereika)
