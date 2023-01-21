@@ -3,7 +3,8 @@
 </p>
 
 Lightweight workflow for microbial genome recovery using either Nanopore or PacBio HiFi reads <br/>
-mmlong2-lite is the microbial genome productions part of the [mmlong2](https://github.com/Serka-M/mmlong2) pipeline <br/>
+<br/>
+mmlong2-lite is the microbial genome production part of the [mmlong2](https://github.com/Serka-M/mmlong2) pipeline <br/>
 <br/>
 <br/>
 **Core features:**
