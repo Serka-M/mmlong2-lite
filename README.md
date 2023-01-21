@@ -15,6 +15,9 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 * Iterative binning strategy for improved microbial genome recovery
 <br/>
 
+**Overview of mmlong2-lite workflow in Nanopore mode:**
+<img src="msc/mmlong-lite-wf.png" alt="mmlong2-lite-wf" style="zoom:100%;" />
+
 <br/>
 
 **Additional documentation:**
