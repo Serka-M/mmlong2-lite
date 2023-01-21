@@ -7,7 +7,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 <br/>
 <br/>
 **Core features:**
-* Snakemake workflow running dependencies from a Singularity container for enhanced reproducibility
+* [Snakemake](https://snakemake.readthedocs.io) workflow running dependencies from a [Singularity](https://docs.sylabs.io/guides/latest/user-guide/) container for enhanced reproducibility
 * Bioinformatics tool and parameter optimizations for high complexity metagenomics samples
 * Circular microbial genome extraction as separate genome bins
 * Eukaryotic contig removal for reduced microbial genome contamination
