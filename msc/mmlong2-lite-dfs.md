@@ -11,9 +11,9 @@
 | Coding_Density | Genome bin gene coding density, reported by CheckM2 |
 | Contig_N50 | Genome bin N50 (bp), reported by CheckM2 |
 | Average_Gene_Length | Average gene length, reported by CheckM2 |
-| Genome_Size | Genome bin size (bp), reported by by CheckM2 |
+| Genome_Size | Genome bin size (bp), reported by CheckM2 |
 | GC_Content | Genome bin guanine-cytosine content (fraction), reported by CheckM2 |
-| Total_Coding_Sequences | Genome bin coding density estimate, reported by CheckM2 |
+| Total_Coding_Sequences | Number of coding sequences, reported by CheckM2 |
 | contigs | Number of contigs, reported by Quast |
 | longest_contig | Length of the longest contig (bp), reported by Quast |
 | N90 | Genome bin N90 (bp), reported by Quast |
