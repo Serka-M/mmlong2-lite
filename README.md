@@ -13,12 +13,10 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 * Eukaryotic contig removal for reduced microbial genome contamination
 * Differential coverage support for improved microbial genome recovery
 * Iterative binning strategy for improved microbial genome recovery
-<br/>
 
 ### Overview of mmlong2-lite workflow in Nanopore mode:
 <br/>
 <img align="center" src="msc/mmlong-lite-wf.png" alt="mmlong2-lite-wf" style="zoom:100%;" />
-<br/>
 
 ### Installation (Conda): 
 To create a local [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) environment for running mmlong2-lite workflow, just copy-paste the following:
@@ -28,7 +26,6 @@ conda activate ./mmlong2-lite || source activate ./mmlong2-lite
 wget https://zenodo.org/record/7558541/files/sing-mmlong2-lite.tar.gz -O mmlong2-lite/bin/sing-mmlong2-lite.tar.gz 
 pv mmlong2-lite/bin/sing-mmlong2-lite.tar.gz | pigz -dc - | tar xf - -C mmlong2-lite/bin/.
 ```
-<br/>
 
 ### Full usage:
 ```
@@ -53,9 +50,7 @@ MISCELLANEOUS INPUTS:
 -h      --help                  Print help information
 -v      --version               Print workflow version number
 ```
-<br/>
 
 ### Additional documentation:
 * [Dataframe description](msc/mmlong2-lite-dfs.md)
 * [Dependency list](msc/mmlong2-lite-dep.md)
-<br/>
