@@ -22,7 +22,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 <br/>
 
 **Full usage:**
-'''
+```
 MAIN INPUTS:
 -np     --nanopore_reads        Path to Nanopore reads (default: none)
 -pb     --pacbio_reads          Path to PacBio HiFi reads (default: none)
@@ -43,7 +43,7 @@ ADDITIONAL INPUTS:
 MISCELLANEOUS INPUTS:
 -h      --help                  Print help information
 -v      --version               Print workflow version number
-'''
+```
 
 <br/>
 
