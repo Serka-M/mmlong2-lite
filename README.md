@@ -18,6 +18,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 <br/>
 <img align="center" src="msc/mmlong-lite-wf.png" alt="mmlong2-lite-wf" style="zoom:100%;" />
 <br/>
+
 ### Installation (Conda): 
 To create a local [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) environment for running mmlong2-lite workflow, just copy-paste the following:
 ```
