@@ -38,7 +38,7 @@ ADDITIONAL INPUTS:
 -mlc    --min_len_contig        Minimum assembly contig length (default: 3000)
 -mlb    --min_len_bin           Minimum genomic bin size (default: 250000)
 -sem    --semibin_model         Binning model for SemiBin (default: global)
--x      --extra_inputs          Extra input for snakemake workflof (default: none)
+-x      --extra_inputs          Extra inputs for snakemake workflow (default: none)
 
 MISCELLANEOUS INPUTS:
 -h      --help                  Print help information
