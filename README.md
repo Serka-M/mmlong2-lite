@@ -21,7 +21,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 
 <br/>
 
-**Installation (conda)**
+**Installation (conda)** <br/>
 To create a local Conda environment for running mmlong2-lite workflow, just copy-paste the following:
 ```
 conda create --prefix mmlong2-lite -c defaults -c conda-forge -c bioconda snakemake=7.19.1 singularity=3.8.6 mamba=1.1.0 wget=1.20.3 pv=1.6.6 pigz=2.6 tar=1.34 -y
