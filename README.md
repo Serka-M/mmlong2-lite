@@ -32,7 +32,7 @@ pv mmlong2-lite/bin/sing-mmlong2-lite.tar.gz | pigz -dc - | tar xf - -C mmlong2-
 
 <br/>
 
-## Full usage
+### Full usage
 ```
 MAIN INPUTS:
 -np     --nanopore_reads        Path to Nanopore reads (default: none)
