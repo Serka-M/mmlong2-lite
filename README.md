@@ -21,6 +21,32 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 
 <br/>
 
+**Full usage:**
+'''
+MAIN INPUTS:
+-np     --nanopore_reads        Path to Nanopore reads (default: none)
+-pb     --pacbio_reads          Path to PacBio HiFi reads (default: none)
+-o      --output_dir            Output directory name (default: mmlong2_out)
+-p      --processes             Number of processes/multithreading (default: 3)
+-cov    --coverage              CSV dataframe for differential coverage binning (e.g. NP/PB/IL,/path/to/reads.fastq)
+
+ADDITIONAL INPUTS:
+-tmp    --temporary_dir         Directory for temporary files (default: none)
+-fmo    --flye_min_ovlp         Minimum overlap between reads used by Flye assembler (default: auto)
+-fmc    --flye_min_cov          Minimum initial contig coverage used by Flye assembler (default: 3)
+-med    --medaka_model          Medaka polishing model (default: r1041_e82_400bps_sup_g615)
+-mlc    --min_len_contig        Minimum assembly contig length (default: 3000)
+-mlb    --min_len_bin           Minimum genomic bin size (default: 250000)
+-sem    --semibin_model         Binning model for SemiBin (default: global)
+-x      --extra_inputs          Extra input for snakemake workflof (default: none)
+
+MISCELLANEOUS INPUTS:
+-h      --help                  Print help information
+-v      --version               Print workflow version number
+'''
+
+<br/>
+
 **Additional documentation:**
 * [Dataframe description](msc/mmlong2-lite-dfs.md)
 * [Dependency list](msc/mmlong2-lite-dep.md)
