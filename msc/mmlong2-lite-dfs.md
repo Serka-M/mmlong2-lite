@@ -23,7 +23,7 @@
 | r_abund | Average genome bin relative abundance (%), reported by CoverM  |
 | wf_name | Workflow output name |
 | wf_mode | Workflow mode |
-| wf_v | Workflow name |
+| wf_v | Workflow version |
 | wf_date | Date of workflow completion |
 
 [//]: # (Written by Mantas Sereika)
