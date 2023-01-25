@@ -85,7 +85,8 @@ rule Finalise:
 	printf "CoverM,0.6.1\n" >> {output.dep}
 	printf "QUAST,5.2.0\n" >> {output.dep}
 	cp {output.dep} {sample}/results/dep_mmlong2-lite.csv
-
+	cp -r {sample}/tmp/binning/bins {sample}/results/.
+	
 	quast.py {sample}/tmp/binning/bins/*.fa -o {sample}/tmp/binning/quast -t {proc}
 	cut -f1,14,15,19,20,23 {sample}/tmp/binning/quast/transposed_report.tsv | sed 1d - > {sample}/tmp/binning/quast.tsv
 	coverm genome -b {sample}/tmp/binning/mapping_tmp/1_cov.bam -d {sample}/tmp/binning/bins -x fa -m mean -o {sample}/tmp/binning/bin_cov.tsv
@@ -103,6 +104,10 @@ rule Finalise:
 	checkm2$Additional_Notes <- NULL
 	colnames(checkm2)[1] <- "bin"
 	bins <- merge(checkm2,merge(quast,merge(cov,abund,by="bin"),by="bin"), by="bin")
+	bins$wf_name <- "{sample}"
+	bins$wf_mode <- "{mode}"
+	bins$wf_v <- "{wf_v}"
+	bins$wf_date <- Sys.Date()
 	write.table(bins,"{output.df1}", quote=F,row.names=FALSE, col.names=TRUE, sep = "\t")
 	write.table(bins,"{output.df2}", quote=F,row.names=FALSE, col.names=TRUE, sep = "\t")
         """
