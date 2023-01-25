@@ -21,5 +21,9 @@
 | N_per_100kb | Rate of Ns in a genome bin per 100 kb, reported by Quast |
 | cov | Average genome bin coverage, reported by CoverM |
 | r_abund | Average genome bin relative abundance (%), reported by CoverM  |
+| wf_name | Workflow output name |
+| wf_mode | Workflow mode |
+| wf_v | Workflow name |
+| wf_date | Date of workflow completion |
 
 [//]: # (Written by Mantas Sereika)
