@@ -12,7 +12,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 * Circular microbial genome extraction as separate genome bins
 * Eukaryotic contig removal for reduced microbial genome contamination
 * Differential coverage support for improved microbial genome recovery
-* Iterative binning strategy for improved microbial genome recovery
+* Iterative ensemble binning strategy for improved microbial genome recovery
 
 ### Overview of mmlong2-lite workflow with Nanopore reads:
 <img align="center" src="msc/mmlong-lite-wf.png" alt="mmlong2-lite-wf" style="zoom:100%;" />
