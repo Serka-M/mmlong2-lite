@@ -48,9 +48,10 @@ ADDITIONAL INPUTS:
 MISCELLANEOUS INPUTS:
 -h      --help                  Print help information
 -v      --version               Print workflow version number
-
 ```
 
 ### Additional documentation:
 * [Dataframe description](msc/mmlong2-lite-dfs.md)
 * [Dependency list](msc/mmlong2-lite-dep.md)
+
+[//]: # (Written by Mantas Sereika)
