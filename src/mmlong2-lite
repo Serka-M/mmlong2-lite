@@ -1,5 +1,5 @@
 #!/bin/bash
-# DESCRIPTION: Wrapper script for running mmlong2-lite snakemake workflow
+# DESCRIPTION: Wrapper script for running mmlong2-lite Snakemake workflow
 # AUTHOR: Mantas Sereika (mase@bio.aau.dk)
 # LICENSE: GNU General Public License
 
@@ -22,6 +22,7 @@ min_contig_len=$(grep min_contig_len $config | cut -d" " -f2 | tr -d '\r')
 min_mag_len=$(grep min_mag_len $config | cut -d" " -f2 | tr -d '\r')
 semibin_mod=$(grep semibin_mod $config | cut -d" " -f2 | tr -d '\r')
 extra=""
+tmp=$(pwd)
 
 # Usage instructions for terminal interface
 usage_text="
@@ -61,7 +62,7 @@ while test $# -gt 0; do
                 -o | --output_dir) shift; sample=$1; shift;;
                 -p | --processes) shift; proc=$1; shift;;
                 -cov | --coverage) shift; cov=$1; shift;;
-                -tmp | --temporary_dir) shift; export TMPDIR=$1; shift;;
+                -tmp | --temporary_dir) shift; tmp=$1; shift;;
                 -fmo | --flye_min_ovlp) shift; flye_min_ovlp=$1; shift;;
                 -fmc | --flye_min_cov) shift; flye_min_cov=$1; shift;;
                 -med | --medaka_model) shift; medak_mod_pol=$1; shift;;				
@@ -86,8 +87,14 @@ if ! command -v snakemake &> /dev/null; then echo "ERROR: Dependency (((snakemak
 if ! command -v singularity &> /dev/null; then echo "ERROR: Dependency (((singularity))) could not be found" && exit 1; fi
 if ! command -v dirname &> /dev/null; then echo "ERROR: Dependency (((dirname))) could not be found" && exit 1; fi
 
+# Configure input paths
+if [[ "$sample" = /* ]]; then sample="$(basename $sample)"; fi
+if [[ ! "$fastq" = /* ]]; then fastq="$(pwd)/$fastq"; fi
+if [[ ! "$tmp" = /* ]]; then tmp="$(pwd)/$tmp"; fi
+export TMPDIR=$tmp
+
 # Configure Singularity bindings
-singularity_binds="-B $(pwd) -B $TMPDIR -B $(dirname $fastq)"
+singularity_binds="-B $(pwd) -B $TMPDIR -B $(dirname $fastq) "
 if [ ! $cov == "none" ]; then while read line || [ -n "$line" ]; do
 	type="$(echo $line | cut -f1 -d",")"
 	reads="$(echo $line | cut -f2 -d",")"
@@ -98,5 +105,5 @@ done < $cov; fi;
 
 # Run snakemake workflow
 echo "Starting Snakemake workflow for $mode reads and $proc multi-threading instances..."
-snakemake --use-singularity --use-conda --singularity-args "$singularity_binds" --cores $proc -s $snakefile --configfile $config --config sing=$sing sample=$sample fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov medak_mod_pol=$medak_mod_pol min_contig_len=$min_contig_len min_mag_len=$min_mag_len semibin_mod=$semibin_mod $extra
+snakemake --use-singularity --use-conda --singularity-args "$singularity_binds" --cores 1 -s $snakefile --configfile $config --config sing=$sing sample=$sample fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov medak_mod_pol=$medak_mod_pol min_contig_len=$min_contig_len min_mag_len=$min_mag_len semibin_mod=$semibin_mod $extra
 exit 0

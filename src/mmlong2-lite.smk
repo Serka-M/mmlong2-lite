@@ -18,6 +18,8 @@ minimap_ram=config["minimap_ram"]
 min_mag_len=config["min_mag_len"]
 semibin_mod=config["semibin_mod"]
 semibin_mods=['human_gut', 'dog_gut', 'ocean', 'soil', 'cat_gut', 'human_oral', 'mouse_gut', 'pig_gut', 'built_environment', 'wastewater', 'chicken_caecum', 'global']
+semibin_prot=config["semibin_prot"]
+semibin_prots=['prodigal', 'fraggenescan', 'fast-naive']
 reads_diffcov=config["reads_diffcov"]
 np_map_ident=config["np_map_ident"]
 pb_map_ident=config["pb_map_ident"]
@@ -46,6 +48,7 @@ onstart:
     if reads_diffcov != "none" and not os.path.exists(reads_diffcov): sys.exit(print("Dataframe for differential coverage binning (((",reads_diffcov,"))) not found. Aborting..."))
     if not mode in modes: sys.exit(print("Provided workflow mode (((",mode,"))) not recognised. Aborting..."))
     if not semibin_mod in semibin_mods: sys.exit(print("Provided model for SemiBin (((",semibin_mod,"))) not recognised. Aborting..."))
+    if not semibin_prot in semibin_prots: sys.exit(print("Provided gene predictor for SemiBin (((",semibin_prot,"))) not recognised. Aborting..."))
 
 onsuccess:
     from datetime import datetime
@@ -61,8 +64,8 @@ rule Finalise:
     input:
         expand("{sample}/tmp/binning/checkm2.tsv",sample=sample)
     output:
-        dep=expand("{sample}/tmp/dep_mmlong2-lite.csv",sample=sample),
-        df1=expand("{sample}/tmp/bins_mmlong2-lite.tsv",sample=sample),
+        dep=expand("{sample}/tmp/binning/dep_mmlong2-lite.csv",sample=sample),
+        df1=expand("{sample}/tmp/binning/bins_mmlong2-lite.tsv",sample=sample),
         df2=expand("{sample}/results/{sample}_bins.tsv",sample=sample)
     shell:
         """
@@ -84,7 +87,7 @@ rule Finalise:
 	printf "CheckM2,1.0.0\n" >> {output.dep}
 	printf "CoverM,0.6.1\n" >> {output.dep}
 	printf "QUAST,5.2.0\n" >> {output.dep}
-	cp {output.dep} {sample}/results/dep_mmlong2-lite.csv
+	cp {output.dep} {sample}/results/dependencies.csv
 	cp -r {sample}/tmp/binning/bins {sample}/results/.
 	
 	quast.py {sample}/tmp/binning/bins/*.fa -o {sample}/tmp/binning/quast -t {proc}
@@ -123,8 +126,6 @@ rule Assembly:
 	if [ ! -d "$(pwd)/{sample}" ]; then mkdir {sample}; fi
 	if [ ! -d "$(pwd)/{sample}/results" ]; then mkdir {sample}/results; fi
 	if [ ! -d "$(pwd)/{sample}/tmp" ]; then mkdir {sample}/tmp; fi
-	if [ ! -d "$(pwd)/{sample}/tmp/binning" ]; then mkdir {sample}/tmp/binning; fi
-	if [ ! -d "$(pwd)/{sample}/tmp/binning/bins" ]; then mkdir {sample}/tmp/binning/bins; fi
 	if [ {mode} == "Nanopore-simplex" ]; then flye_opt="--nano-hq"; fi
 	if [ {mode} == "PacBio-HiFi" ]; then flye_opt="--read-error 0.01 --pacbio-hifi"; fi
         if [ {flye_ovlp} -eq 0 ]; then flye_ovlp=""; else flye_ovlp="--min-overlap {flye_ovlp}"; fi
@@ -152,6 +153,8 @@ rule Polishing:
 	medaka stitch {sample}/tmp/polishing/*.hdf {input} {output.org} --threads $splits; fi
 	cp {output.org}  {sample}/results/{sample}_assembly.fasta
 	seqkit seq -m {min_contig_len} {output.org} > {output.filt}
+	if [ ! -d "$(pwd)/{sample}/tmp/binning" ]; then mkdir {sample}/tmp/binning; fi
+	if [ ! -d "$(pwd)/{sample}/tmp/binning/bins" ]; then mkdir {sample}/tmp/binning/bins; fi
         """
 
 rule Eukaryote_removal:
@@ -189,8 +192,7 @@ rule Coverage_calculation:
         expand("{sample}/tmp/polishing/asm_pol_lenfilt.fasta",sample=sample)
     output:
         reads=expand("{sample}/tmp/binning/reads.tsv",sample=sample),
-        cov1=expand("{sample}/tmp/binning/metabat_cov.tsv",sample=sample),
-        cov2=expand("{sample}/tmp/binning/metabinner_cov.tsv",sample=sample)
+        cov=expand("{sample}/tmp/binning/metabat_cov.tsv",sample=sample),
     shell:
         """
 	if [ {mode} == "PacBio-HiFi" ]; then reads="PB";fi
@@ -212,12 +214,9 @@ rule Coverage_calculation:
 	jgi_summarize_bam_contig_depths $(pwd)/{sample}/tmp/binning/mapping_tmp/"${{count}}_cov.bam" --percentIdentity $ident --outputDepth $(pwd)/{sample}/tmp/binning/cov_tmp/"${{count}}_cov.tsv"	
 	cov_init=$(pwd)/{sample}/tmp/binning/cov_tmp/${{count}}_cov.tsv
 	cov_metabat=$(pwd)/{sample}/tmp/binning/cov_tmp/${{count}}_metabat.tsv
-	cov_metabinner=$(pwd)/{sample}/tmp/binning/cov_tmp/${{count}}_metabinner.tsv
-	if [ "$cov_init" == "$cov_init_/1_cov.tsv" ]; then cp $cov_init $cov_metabat; else cut -f4,5 $cov_init > $cov_metabat; fi
-	if [ "$cov_init" == "$cov_init_/1_cov.tsv" ]; then cut -f1,4 $cov_init > $cov_metabinner; else cut -f4 $cov_init > $cov_metabinner; fi; fi; done
+	if [ "$cov_init" == "$cov_init_/1_cov.tsv" ]; then cp $cov_init $cov_metabat; else cut -f4,5 $cov_init > $cov_metabat; fi; fi; done
 
-	paste -d "\t" $(ls -v $cov_init_/*_metabat.tsv) > {output.cov1}
-	paste -d "\t" $(ls -v $cov_init_/*_metabinner.tsv) > {output.cov2}
+	paste -d "\t" $(ls -v $cov_init_/*_metabat.tsv) > {output.cov}
         """
 
 rule Binning_prep_1:
@@ -265,7 +264,7 @@ rule Binning_SemiBin_1:
         expand("{sample}/tmp/binning/round_1/semibin/bins_info.tsv",sample=sample)
     shell:
         """
-	SemiBin single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/*_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder prodigal
+	SemiBin single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/*_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder {semibin_prot}
         """
 
 rule Binning_GraphMB_1:
@@ -354,7 +353,7 @@ rule Binning_SemiBin_2:
         expand("{sample}/tmp/binning/round_2/semibin/bins_info.tsv",sample=sample)
     shell:
         """
-	SemiBin single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/*_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder prodigal
+	SemiBin single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/*_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder {semibin_prot}
         """
 
 rule Binning_GraphMB_2:
@@ -443,7 +442,7 @@ rule Binning_SemiBin_3:
         expand("{sample}/tmp/binning/round_3/semibin/bins_info.tsv",sample=sample)
     shell:
         """
-	SemiBin single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/1_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder prodigal --environment {semibin_mod}
+	SemiBin single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/1_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder {semibin_prot} --environment {semibin_mod}
         """
 
 rule Binning_GraphMB_3:
