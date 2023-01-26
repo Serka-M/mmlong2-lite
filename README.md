@@ -50,6 +50,12 @@ MISCELLANEOUS INPUTS:
 -v      --version               Print workflow version number
 ```
 
+### Overview of result files:
+* `assembly.fasta` - assembled and polished metagenome after minimum length filtering
+* `<name>_bins.tsv` - dataframe for automated binning results
+* `bins` - directory for metagenome assembled genomes
+* `dependencies.csv`- list of dependencies used and their versions
+
 ### Additional documentation:
 * [Dataframe description](msc/mmlong2-lite-dfs.md)
 * [Dependency list](msc/mmlong2-lite-dep.md)
