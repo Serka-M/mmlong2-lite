@@ -37,13 +37,13 @@ MAIN INPUTS:
  
 ADDITIONAL INPUTS:
 -tmp	--temporary_dir		Directory for temporary files (default: none)
+-med	--medaka_model		Medaka polishing model (default: $medak_mod_pol)
+-sem	--semibin_model		Binning model for SemiBin (default: $semibin_mod)
 -fmo	--flye_min_ovlp		Minimum overlap between reads used by Flye assembler (default: auto)
 -fmc	--flye_min_cov		Minimum initial contig coverage used by Flye assembler (default: $flye_min_cov)
--med	--medaka_model		Medaka polishing model (default: $medak_mod_pol)
 -mlc	--min_len_contig	Minimum assembly contig length (default: $min_contig_len)
 -mlb	--min_len_bin		Minimum genomic bin size (default: $min_mag_len)
--sem	--semibin_model		Binning model for SemiBin (default: $semibin_mod)
--x	--extra_inputs		Extra inputs for snakemake workflow (default: none)
+-x	--extra_inputs		Extra inputs for Snakemake workflow (default: none)
 
 MISCELLANEOUS INPUTS:
 -h	--help			Print help information
@@ -87,7 +87,7 @@ if ! command -v singularity &> /dev/null; then echo "ERROR: Dependency (((singul
 if ! command -v dirname &> /dev/null; then echo "ERROR: Dependency (((dirname))) could not be found" && exit 1; fi
 
 # Configure Singularity bindings
-singularity_binds="-B $(pwd) -B $(dirname $fastq)"
+singularity_binds="-B $(pwd) -B $TMPDIR -B $(dirname $fastq)"
 if [ ! $cov == "none" ]; then while read line || [ -n "$line" ]; do
 	type="$(echo $line | cut -f1 -d",")"
 	reads="$(echo $line | cut -f2 -d",")"

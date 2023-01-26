@@ -278,7 +278,7 @@ rule Binning_GraphMB_1:
     shell:
         """
 	cp {sample}/tmp/flye/assembly_graph.gfa {sample}/tmp/binning/round_{params}/.
-	graphmb --assembly {sample}/tmp/binning/round_{params} --outdir {sample}/tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye 
+	graphmb --assembly {sample}/tmp/binning/round_{params} --outdir {sample}/tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye --vamb --minbin {min_mag_len} --mincontig {min_contig_len}
         """
 
 rule Binning_DASTool_1:
@@ -367,7 +367,7 @@ rule Binning_GraphMB_2:
     shell:
         """
 	cp {sample}/tmp/flye/assembly_graph.gfa {sample}/tmp/binning/round_{params}/.
-	graphmb --assembly {sample}/tmp/binning/round_{params} --outdir {sample}/tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye 
+	graphmb --assembly {sample}/tmp/binning/round_{params} --outdir {sample}/tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye --vamb --minbin {min_mag_len} --mincontig {min_contig_len}
         """
 
 rule Binning_DASTool_2:
@@ -456,7 +456,7 @@ rule Binning_GraphMB_3:
     shell:
         """
 	cp {sample}/tmp/flye/assembly_graph.gfa {sample}/tmp/binning/round_{params}/.
-	graphmb --assembly {sample}/tmp/binning/round_{params} --outdir {sample}/tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye 
+	graphmb --assembly {sample}/tmp/binning/round_{params} --outdir {sample}/tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye --vamb --minbin {min_mag_len} --mincontig {min_contig_len}
         """
 
 rule Binning_DASTool_3:
