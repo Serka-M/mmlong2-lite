@@ -32,22 +32,23 @@ MAIN INPUTS:
 -np     --nanopore_reads        Path to Nanopore reads (default: none)
 -pb     --pacbio_reads          Path to PacBio HiFi reads (default: none)
 -o      --output_dir            Output directory name (default: mmlong2_out)
--p      --processes             Number of processes/multithreading (default: 3)
+-p      --processes             Number of processes/multi-threading (default: 3)
 -cov    --coverage              CSV dataframe for differential coverage binning (e.g. NP/PB/IL,/path/to/reads.fastq)
 
 ADDITIONAL INPUTS:
 -tmp    --temporary_dir         Directory for temporary files (default: none)
+-med    --medaka_model          Medaka polishing model (default: r1041_e82_400bps_sup_g615)
+-sem    --semibin_model         Binning model for SemiBin (default: global)
 -fmo    --flye_min_ovlp         Minimum overlap between reads used by Flye assembler (default: auto)
 -fmc    --flye_min_cov          Minimum initial contig coverage used by Flye assembler (default: 3)
--med    --medaka_model          Medaka polishing model (default: r1041_e82_400bps_sup_g615)
 -mlc    --min_len_contig        Minimum assembly contig length (default: 3000)
 -mlb    --min_len_bin           Minimum genomic bin size (default: 250000)
--sem    --semibin_model         Binning model for SemiBin (default: global)
--x      --extra_inputs          Extra inputs for snakemake workflow (default: none)
+-x      --extra_inputs          Extra inputs for Snakemake workflow (default: none)
 
 MISCELLANEOUS INPUTS:
 -h      --help                  Print help information
 -v      --version               Print workflow version number
+
 ```
 
 ### Additional documentation:
