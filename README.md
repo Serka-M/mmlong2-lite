@@ -55,8 +55,8 @@ MISCELLANEOUS INPUTS:
 ### Overview of result files:
 * `<output_name>_assembly.fasta` - assembled and polished metagenome
 * `<output_name>_bins.tsv` - dataframe for automated binning results
-* `bins` - directory for metagenome assembled genomes
 * `dependencies.csv`- list of dependencies used and their versions
+* `bins` - directory for metagenome assembled genomes
 
 ### Additional documentation:
 * [Dataframe description](msc/mmlong2-lite-dfs.md)
