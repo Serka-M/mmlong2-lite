@@ -18,7 +18,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 * Iterative ensemble binning strategy for improved microbial genome recovery
 
 ### Overview of mmlong2-lite workflow with Nanopore reads:
-<img align="center" src="msc/mmlong-lite-wf.png" alt="mmlong2-lite-wf" style="zoom:100%;" />
+<img align="center" src="msc/mmlong2-lite-wf.png" alt="mmlong2-lite-wf" style="zoom:100%;" />
 
 ### Installation (Conda): 
 To create a local [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) environment for running mmlong2-lite workflow, just copy-paste the following:
