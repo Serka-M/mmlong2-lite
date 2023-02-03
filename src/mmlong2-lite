@@ -105,5 +105,5 @@ done < $cov; fi;
 
 # Run snakemake workflow
 echo "Starting Snakemake workflow for $mode reads and $proc multi-threading instances..."
-snakemake --use-singularity --use-conda --singularity-args "$singularity_binds" --cores 1 -s $snakefile --configfile $config --config sing=$sing sample=$sample fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov medak_mod_pol=$medak_mod_pol min_contig_len=$min_contig_len min_mag_len=$min_mag_len semibin_mod=$semibin_mod $extra
+snakemake --use-singularity --use-conda --singularity-args "$singularity_binds" --cores 1 --nolock -s $snakefile --configfile $config --config sing=$sing sample=$sample fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov medak_mod_pol=$medak_mod_pol min_contig_len=$min_contig_len min_mag_len=$min_mag_len semibin_mod=$semibin_mod $extra
 exit 0

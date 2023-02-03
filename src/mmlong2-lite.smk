@@ -19,7 +19,7 @@ min_mag_len=config["min_mag_len"]
 semibin_mod=config["semibin_mod"]
 semibin_mods=['human_gut', 'dog_gut', 'ocean', 'soil', 'cat_gut', 'human_oral', 'mouse_gut', 'pig_gut', 'built_environment', 'wastewater', 'chicken_caecum', 'global']
 semibin_prot=config["semibin_prot"]
-semibin_prots=['prodigal', 'fraggenescan', 'fast-naive']
+semibin_prots=['prodigal', 'fraggenescan']
 reads_diffcov=config["reads_diffcov"]
 np_map_ident=config["np_map_ident"]
 pb_map_ident=config["pb_map_ident"]
@@ -81,7 +81,7 @@ rule Finalise:
 	printf "Medaka,1.7.2\n" >> {output.dep}
 	printf "Tiara,1.0.3\n" >> {output.dep}
 	printf "MetaBAT2,2.15\n" >> {output.dep}
-	printf "SemiBin,1.4\n" >> {output.dep}
+	printf "SemiBin,1.5\n" >> {output.dep}
 	printf "GraphMB,0.1.5\n" >> {output.dep}
 	printf "DAS_Tool,1.1.3\n" >> {output.dep}
 	printf "CheckM2,1.0.0\n" >> {output.dep}
@@ -153,8 +153,6 @@ rule Polishing:
 	medaka stitch {sample}/tmp/polishing/*.hdf {input} {output.org} --threads $splits; fi
 	cp {output.org}  {sample}/results/{sample}_assembly.fasta
 	seqkit seq -m {min_contig_len} {output.org} > {output.filt}
-	if [ ! -d "$(pwd)/{sample}/tmp/binning" ]; then mkdir {sample}/tmp/binning; fi
-	if [ ! -d "$(pwd)/{sample}/tmp/binning/bins" ]; then mkdir {sample}/tmp/binning/bins; fi
         """
 
 rule Eukaryote_removal:
@@ -179,6 +177,8 @@ rule cMAG_extraction:
         df=expand("{sample}/tmp/binning/bins_c/contig_cbin.tsv",sample=sample)
     shell:
         """
+	if [ ! -d "$(pwd)/{sample}/tmp/binning" ]; then mkdir {sample}/tmp/binning; fi
+	if [ ! -d "$(pwd)/{sample}/tmp/binning/bins" ]; then mkdir {sample}/tmp/binning/bins; fi
 	if [ ! -d "$(pwd)/{sample}/tmp/binning/bins_c" ]; then mkdir {sample}/tmp/binning/bins_c; fi
 	if [ ! -d "$(pwd)/{sample}/tmp/binning/bins_c/cbins_init" ]; then mkdir {sample}/tmp/binning/bins_c/cbins_init; fi
 	awk -F "\t" '{{ if (($2 >= {min_mag_len}) && ($4 == "Y")) {{print $1 "\t" "bin.c" ++i; next}} }}' {sample}/tmp/flye/assembly_info.txt > {output.df}
@@ -195,12 +195,13 @@ rule Coverage_calculation:
         cov=expand("{sample}/tmp/binning/metabat_cov.tsv",sample=sample),
     shell:
         """
+	if [ ! -d "$(pwd)/{sample}/tmp/binning" ]; then mkdir {sample}/tmp/binning; fi
+	if [ ! -d "$(pwd)/{sample}/tmp/binning/mapping_tmp" ]; then mkdir {sample}/tmp/binning/mapping_tmp; fi
+	if [ ! -d "$(pwd)/{sample}/tmp/binning/cov_tmp" ]; then mkdir {sample}/tmp/binning/cov_tmp; fi
 	if [ {mode} == "PacBio-HiFi" ]; then reads="PB";fi
 	if [ {mode} == "Nanopore-simplex" ]; then reads="NP";fi
 	printf "$reads,{fastq}\n" > {output.reads}
 	if [ -f {reads_diffcov} ]; then cat {reads_diffcov} >> {output.reads}; fi
-	if [ ! -d "$(pwd)/{sample}/tmp/binning/mapping_tmp" ]; then mkdir {sample}/tmp/binning/mapping_tmp; fi
-	if [ ! -d "$(pwd)/{sample}/tmp/binning/cov_tmp" ]; then mkdir {sample}/tmp/binning/cov_tmp; fi
 	cov_init_=$(pwd)/{sample}/tmp/binning/cov_tmp
 
 	count=0 && cat {output.reads} | while read line || [ -n "$line" ]; do
@@ -264,7 +265,7 @@ rule Binning_SemiBin_1:
         expand("{sample}/tmp/binning/round_1/semibin/bins_info.tsv",sample=sample)
     shell:
         """
-	SemiBin single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/*_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder {semibin_prot}
+	SemiBin2 single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/*_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder {semibin_prot} --compression none
         """
 
 rule Binning_GraphMB_1:
@@ -277,7 +278,10 @@ rule Binning_GraphMB_1:
     shell:
         """
 	cp {sample}/tmp/flye/assembly_graph.gfa {sample}/tmp/binning/round_{params}/.
-	graphmb --assembly {sample}/tmp/binning/round_{params} --outdir {sample}/tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye --vamb --minbin {min_mag_len} --mincontig {min_contig_len}
+	cd {sample}
+	graphmb --assembly tmp/binning/round_{params} --outdir tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye --vamb --minbin {min_mag_len} --mincontig {min_contig_len}
+	rm features.tsv
+	cd ..
         """
 
 rule Binning_DASTool_1:
@@ -353,7 +357,7 @@ rule Binning_SemiBin_2:
         expand("{sample}/tmp/binning/round_2/semibin/bins_info.tsv",sample=sample)
     shell:
         """
-	SemiBin single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/*_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder {semibin_prot}
+	SemiBin2 single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/*_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder {semibin_prot} --compression none
         """
 
 rule Binning_GraphMB_2:
@@ -366,7 +370,10 @@ rule Binning_GraphMB_2:
     shell:
         """
 	cp {sample}/tmp/flye/assembly_graph.gfa {sample}/tmp/binning/round_{params}/.
-	graphmb --assembly {sample}/tmp/binning/round_{params} --outdir {sample}/tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye --vamb --minbin {min_mag_len} --mincontig {min_contig_len}
+	cd {sample}
+	graphmb --assembly tmp/binning/round_{params} --outdir tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye --vamb --minbin {min_mag_len} --mincontig {min_contig_len}
+	rm features.tsv
+	cd ..
         """
 
 rule Binning_DASTool_2:
@@ -442,7 +449,7 @@ rule Binning_SemiBin_3:
         expand("{sample}/tmp/binning/round_3/semibin/bins_info.tsv",sample=sample)
     shell:
         """
-	SemiBin single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/1_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder {semibin_prot} --environment {semibin_mod}
+	SemiBin2 single_easy_bin -i {input} -b {sample}/tmp/binning/mapping_tmp/1_cov.bam -o {sample}/tmp/binning/round_{params}/semibin -p {proc} -m {min_contig_len} --minfasta-kbs $(({min_mag_len}/1000)) --self-supervised --sequencing-type long_read --engine cpu --orf-finder {semibin_prot} --compression none --environment {semibin_mod}
         """
 
 rule Binning_GraphMB_3:
@@ -455,7 +462,10 @@ rule Binning_GraphMB_3:
     shell:
         """
 	cp {sample}/tmp/flye/assembly_graph.gfa {sample}/tmp/binning/round_{params}/.
-	graphmb --assembly {sample}/tmp/binning/round_{params} --outdir {sample}/tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye --vamb --minbin {min_mag_len} --mincontig {min_contig_len}
+	cd {sample}
+	graphmb --assembly tmp/binning/round_{params} --outdir tmp/binning/round_{params}/graphmb --assembly_name contigs_lin.fasta --depth metabat_cov_filt.tsv --contignodes --numcores {proc} --assembly_type flye --vamb --minbin {min_mag_len} --mincontig {min_contig_len}
+	rm features.tsv
+	cd ..
         """
 
 rule Binning_DASTool_3:

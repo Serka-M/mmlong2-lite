@@ -1,6 +1,6 @@
-version: 0.0.1
-sample: mmlong2_out
-container: none
+version: 1.0.0
+sample: mmlong2
+sing: none
 fastq: none
 reads_diffcov: none
 mode: Nanopore-simplex
