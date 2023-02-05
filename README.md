@@ -1,5 +1,5 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/Serka-M/mmlong2-lite/blob/main/LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7602112.svg)](https://doi.org/10.5281/zenodo.7602112)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7607335.svg)](https://doi.org/10.5281/zenodo.7607335)
 
 <p align="center">
 <img align="center" width="250" height="250" src="msc/mmlong2-lite-logo.png" alt="logo" style="zoom:100%;" />
@@ -24,7 +24,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 To create a local [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) environment for running mmlong2-lite workflow, just copy-paste the following:
 ```
 conda create --prefix mmlong2-lite -c conda-forge -c bioconda snakemake=7.19.1 singularity=3.8.6 zenodo_get=1.3.4 pv=1.6.6 pigz=2.6 tar=1.34 -y
-conda activate ./mmlong2-lite || source activate ./mmlong2-lite && zenodo_get -r 7602112 -o mmlong2-lite/bin 
+conda activate ./mmlong2-lite || source activate ./mmlong2-lite && zenodo_get -r 7607335 -o mmlong2-lite/bin 
 pv mmlong2-lite/bin/sing-mmlong2-lite*.tar.gz | pigz -dc - | tar xf - -C mmlong2-lite/bin/. && chmod +x mmlong2-lite/bin/mmlong2-lite
 ```
 
