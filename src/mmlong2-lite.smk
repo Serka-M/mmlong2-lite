@@ -191,7 +191,7 @@ rule Coverage_calculation:
     input:
         expand("{sample}/tmp/polishing/asm_pol_lenfilt.fasta",sample=sample)
     output:
-        reads=expand("{sample}/tmp/binning/reads.tsv",sample=sample),
+        reads=expand("{sample}/tmp/binning/reads.csv",sample=sample),
         cov=expand("{sample}/tmp/binning/metabat_cov.tsv",sample=sample),
     shell:
         """

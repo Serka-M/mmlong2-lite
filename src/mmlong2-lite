@@ -95,6 +95,7 @@ export TMPDIR=$tmp
 
 # Configure Singularity bindings
 singularity_binds="-B $(pwd) -B $TMPDIR -B $(dirname $fastq) "
+if [ ! $cov == "none" ]; then singularity_binds=$(echo "$singularity_binds -B $(dirname $cov)"); fi
 if [ ! $cov == "none" ]; then while read line || [ -n "$line" ]; do
 	type="$(echo $line | cut -f1 -d",")"
 	reads="$(echo $line | cut -f2 -d",")"
