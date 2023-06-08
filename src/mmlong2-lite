@@ -23,6 +23,9 @@ min_mag_len=$(grep min_mag_len $config | cut -d" " -f2 | tr -d '\r')
 semibin_mod=$(grep semibin_mod $config | cut -d" " -f2 | tr -d '\r')
 extra=""
 tmp=$(pwd)
+stage="OFF"
+stages=("OFF" "assembly" "polishing")
+rule="Finalise"
 
 # Usage instructions for terminal interface
 usage_text="
@@ -35,6 +38,7 @@ MAIN INPUTS:
 -o	--output_dir		Output directory name (default: $sample)
 -p	--processes		Number of processes/multi-threading (default: $proc)
 -cov 	--coverage		CSV dataframe for differential coverage binning (e.g. NP/PB/IL,/path/to/reads.fastq)
+-run	--run_until		Run pipeline until a specified stage completes (e.g. ${stages[*]/$stage})
  
 ADDITIONAL INPUTS:
 -tmp	--temporary_dir		Directory for temporary files (default: none)
@@ -62,6 +66,7 @@ while test $# -gt 0; do
                 -o | --output_dir) shift; sample=$1; shift;;
                 -p | --processes) shift; proc=$1; shift;;
                 -cov | --coverage) shift; cov=$1; shift;;
+                -run | --run_until) shift; stage=$1; shift;;
                 -tmp | --temporary_dir) shift; tmp=$1; shift;;
                 -fmo | --flye_min_ovlp) shift; flye_min_ovlp=$1; shift;;
                 -fmc | --flye_min_cov) shift; flye_min_cov=$1; shift;;
@@ -78,6 +83,7 @@ while test $# -gt 0; do
   done  
 
 # Basic checks
+if [[ ! " ${stages[@]} " =~ " ${stage} " ]]; then echo "ERROR: provided input for early stoppage not recognized" && exit 1; fi
 if [ $fastq == "none" ]; then printf -- "$usage_text" && echo "ERROR: Sequencing reads not provided" && exit 1; fi
 if [ ! -f $fastq ]; then printf -- "$usage_text" && echo "ERROR: Provided sequencing read file not found" && exit 1; fi
 if [ ! $cov == "none" ] && [ ! -f $cov ]; then printf -- "$usage_text" && echo "ERROR: Provided dataframe for differential coverage binning not found" && exit 1; fi
@@ -86,6 +92,10 @@ if [ $gigabytes_left -lt 100 ]; then  echo "ERROR: Less than 100 GB of free spac
 if ! command -v snakemake &> /dev/null; then echo "ERROR: Dependency (((snakemake))) could not be found" && exit 1; fi
 if ! command -v singularity &> /dev/null; then echo "ERROR: Dependency (((singularity))) could not be found" && exit 1; fi
 if ! command -v dirname &> /dev/null; then echo "ERROR: Dependency (((dirname))) could not be found" && exit 1; fi
+
+# Configure early stoppage
+if [ $stage == "assembly" ]; then rule="Assembly"; fi
+if [ $stage == "polishing" ]; then rule="Polishing"; fi
 
 # Configure input paths
 if [[ "$sample" = /* ]]; then sample="$(basename $sample)"; fi
@@ -106,5 +116,5 @@ done < $cov; fi;
 
 # Run snakemake workflow
 echo "Starting Snakemake workflow for $mode reads and $proc multi-threading instances..."
-snakemake --use-singularity --use-conda --singularity-args "$singularity_binds" --cores 1 --nolock -s $snakefile --configfile $config --config sing=$sing sample=$sample fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov medak_mod_pol=$medak_mod_pol min_contig_len=$min_contig_len min_mag_len=$min_mag_len semibin_mod=$semibin_mod $extra
+snakemake --use-singularity --use-conda --singularity-args "$singularity_binds" --cores 1 --nolock -s $snakefile --configfile $config -R $rule --until $rule --config sing=$sing sample=$sample fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov medak_mod_pol=$medak_mod_pol min_contig_len=$min_contig_len min_mag_len=$min_mag_len semibin_mod=$semibin_mod $extra
 exit 0
