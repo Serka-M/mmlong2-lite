@@ -36,10 +36,11 @@ MAIN INPUTS:
 -o      --output_dir            Output directory name (default: mmlong2)
 -p      --processes             Number of processes/multi-threading (default: 3)
 -cov    --coverage              CSV dataframe for differential coverage binning (e.g. NP/PB/IL,/path/to/reads.fastq)
+-run    --run_until             Run pipeline until a specified stage completes (e.g. assembly polishing)
 
 ADDITIONAL INPUTS:
 -tmp    --temporary_dir         Directory for temporary files (default: none)
--med    --medaka_model          Medaka polishing model (default: r1041_e82_400bps_sup_g615)
+-med    --medaka_model          Medaka polishing model (default: r1041_e82_400bps_sup_v4.2.0)
 -sem    --semibin_model         Binning model for SemiBin (default: global)
 -fmo    --flye_min_ovlp         Minimum overlap between reads used by Flye assembler (default: auto)
 -fmc    --flye_min_cov          Minimum initial contig coverage used by Flye assembler (default: 3)
