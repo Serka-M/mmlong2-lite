@@ -20,9 +20,10 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 
 ### Schematic overview
 <img align="center" src="msc/mmlong2-lite-wf.png" alt="mmlong2-lite-wf" style="zoom:100%;" />
+<br/>
 
 ## Installation
-### Installation from source (Conda): 
+### Installation from source (Conda) 
 To create a local [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) environment for running mmlong2-lite workflow, just copy-paste the following:
 ```
 mamba create --prefix mmlong2-lite -c conda-forge -c bioconda snakemake=8.2.3 singularity=3.8.6 zenodo_get=1.6.1 pv=1.6.6 pigz=2.6 tar=1.34 -y
@@ -33,9 +34,10 @@ chmod +x mmlong2-lite/bin/mmlong2-lite
 mmlong2-lite -h 
 ```
 After setting up the virtual environment, the required software dependencies will be automatically installed when running the workflow for the first time.
+<br/>
 
 ## Running mmlong2-lite
-### Full usage:
+### Full usage
 ```
 MAIN SETTINGS:
 -np     --nanopore_reads        Path to Nanopore reads (default: none)
@@ -67,13 +69,13 @@ ADVANCED SETTINGS:
 -x      --extra_inputs          Extra inputs for Snakemake config file
 ```
 
-### Overview of result files:
+### Overview of result files
 * `<output_name>_assembly.fasta` - assembled and polished metagenome
 * `<output_name>_bins.tsv` - dataframe for automated binning results
 * `dependencies.csv`- list of dependencies used and their versions
 * `bins` - directory for metagenome assembled genomes
 
-### Additional documentation:
+### Additional documentation
 * [Dataframe description](msc/mmlong2-lite-dfs.md)
 * [Dependency list](msc/mmlong2-lite-dep.md)
 
