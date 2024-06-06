@@ -5,20 +5,19 @@
 | Category | Description |
 | --- | --- |
 | bin | Genome bin ID |
-| Completeness | Genome bin completeness estimate, reported by CheckM2 |
-| Contamination | Genome bin contamination estimate, reported by CheckM2 |
-| Completeness_Model_Used | Model used by CheckM2 |
-| Coding_Density | Genome bin gene coding density, reported by CheckM2 |
-| Contig_N50 | Genome bin N50 (bp), reported by CheckM2 |
-| Average_Gene_Length | Average gene length, reported by CheckM2 |
-| Genome_Size | Genome bin size (bp), reported by CheckM2 |
-| GC_Content | Genome bin guanine-cytosine content (fraction), reported by CheckM2 |
-| Total_Coding_Sequences | Number of coding sequences, reported by CheckM2 |
-| Total_Contigs | Number of contigs, reported by CheckM2 |
-| Max_Contig_Length | Length of the longest contig (bp), reported by CheckM2 |
-| N90 | Genome bin N90 (bp), reported by Quast |
-| [auN](http://lh3.github.io/2020/04/08/a-new-metric-on-assembly-contiguity) | Nx area under the curve, reported by Quast |
-| N_per_100kb | Rate of Ns in a genome bin per 100 kb, reported by Quast |
+| completeness_checkm1 | Genome bin completeness estimate, reported by CheckM |
+| contamination_checkm1 | Genome bin contamination estimate, reported by CheckM |
+| strain_heterogeneity_checkm1 | Genome bin strain heterogeneity estimate, reported by CheckM |
+| completeness_checkm2 | Genome bin completeness estimate, reported by CheckM2 |
+| contamination_checkm2 | Genome bin contamination estimate, reported by CheckM2 |
+| coding_density | Genome bin gene coding density, reported by CheckM2 |
+| genome_size | Genome bin size (bp), reported by CheckM2 |
+| contigs | Number of contigs, reported by CheckM2 |
+| gc |  Genome bin guanine-cytosine content, reported by CheckM2 |
+| contig_n50 | Genome bin N50 (bp), reported by CheckM2 |
+| contig_n90 | Genome bin N90 (bp), reported by CheckM2 |
+| [aun](http://lh3.github.io/2020/04/08/a-new-metric-on-assembly-contiguity) | Nx area under the curve, reported by Quast |
+| n_per_100kb | Rate of Ns in a genome bin per 100 kb, reported by Quast |
 | cov | Average genome bin coverage, reported by CoverM |
 | r_abund | Average genome bin relative abundance (%), reported by CoverM  |
 | wf_name | Workflow output name |
