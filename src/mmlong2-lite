@@ -10,49 +10,73 @@ config=$script/mmlong2-lite-config.yaml
 snakefile=$script/mmlong2-lite.smk
 sing=$script/sing-mmlong2-lite
 version=$(grep version $config | cut -d" " -f2 | tr -d '\r')
+zenodo_id=$(grep zenodo_id $config | cut -d" " -f2 | tr -d '\r')
 mode=$(grep mode $config | cut -d" " -f2 | tr -d '\r')
 fastq=$(grep fastq $config | cut -d" " -f2 | tr -d '\r')
 sample=$(grep sample $config | cut -d" " -f2 | tr -d '\r')
-proc=$(grep proc $config | cut -d" " -f2 | tr -d '\r')
+loc=$(grep loc $config | cut -d" " -f2 | tr -d '\r')
+proc=$(grep -w proc $config | cut -d" " -f2 | tr -d '\r')
 cov=$(grep reads_diffcov $config | cut -d" " -f2 | tr -d '\r')
 flye_min_ovlp=$(grep flye_ovlp $config | cut -d" " -f2 | tr -d '\r')
 flye_min_cov=$(grep flye_cov $config | cut -d" " -f2 | tr -d '\r')
+mdbg_status=$(grep mdbg_status $config | cut -d" " -f2 | tr -d '\r')
+medaka_status=$(grep medaka_status $config | cut -d" " -f2 | tr -d '\r')
 medak_mod_pol=$(grep medak_mod_pol $config | cut -d" " -f2 | tr -d '\r')
 min_contig_len=$(grep min_contig_len $config | cut -d" " -f2 | tr -d '\r')
 min_mag_len=$(grep min_mag_len $config | cut -d" " -f2 | tr -d '\r')
 semibin_mod=$(grep semibin_mod $config | cut -d" " -f2 | tr -d '\r')
+vamb_status=$(grep vamb_status $config | cut -d" " -f2 | tr -d '\r')
+apptainer_status=$(grep apptainer_status $config | cut -d" " -f2 | tr -d '\r')
+env_1=$(grep env_1 $config | cut -d" " -f2 | tr -d '\r')
+env_2=$(grep env_2 $config | cut -d" " -f2 | tr -d '\r')
+env_3=$(grep env_3 $config | cut -d" " -f2 | tr -d '\r')
+env_4=$(grep env_4 $config | cut -d" " -f2 | tr -d '\r')
+env_5=$(grep env_5 $config | cut -d" " -f2 | tr -d '\r')
+env_6=$(grep env_6 $config | cut -d" " -f2 | tr -d '\r')
+env_7=$(grep env_7 $config | cut -d" " -f2 | tr -d '\r')
+env_8=$(grep env_8 $config | cut -d" " -f2 | tr -d '\r')
 extra=""
+dryrun=""
+touch=""
 tmp=$(pwd)
 stage="OFF"
-stages=("OFF" "assembly" "polishing")
+stages=("OFF" "assembly" "polishing" "filtering" "singletons" "coverage")
 rule="Finalise"
+apptainer="apptainer"
 
 # Usage instructions for terminal interface
 usage_text="
-mmlong2-lite: a workflow for microbial genome recovery using long reads
+mmlong2-lite: bioinformatics pipeline for microbial genome recovery using long reads
 For issues or feedback please use https://github.com/Serka-M/mmlong2-lite/issues or e-mail to mase@bio.aau.dk 
 
-MAIN INPUTS:
+MAIN SETTINGS:
 -np	--nanopore_reads	Path to Nanopore reads (default: $fastq)
 -pb	--pacbio_reads		Path to PacBio HiFi reads (default: $fastq)
 -o	--output_dir		Output directory name (default: $sample)
 -p	--processes		Number of processes/multi-threading (default: $proc)
+ 
+OPTIONAL SETTINGS:
 -cov 	--coverage		CSV dataframe for differential coverage binning (e.g. NP/PB/IL,/path/to/reads.fastq)
 -run	--run_until		Run pipeline until a specified stage completes (e.g. ${stages[*]/$stage})
- 
-ADDITIONAL INPUTS:
 -tmp	--temporary_dir		Directory for temporary files (default: none)
+-dbg	--use_metamdbg		Use metaMDBG for assembly of PacBio reads (default: use metaFlye)
 -med	--medaka_model		Medaka polishing model (default: $medak_mod_pol)
+-mo	--medaka_off		Do not run Medaka polishing with Nanopore assemblies (default: use Medaka)
+-vmb	--use_vamb		Use VAMB for binning (default: use GraphMB)
 -sem	--semibin_model		Binning model for SemiBin (default: $semibin_mod)
--fmo	--flye_min_ovlp		Minimum overlap between reads used by Flye assembler (default: auto)
--fmc	--flye_min_cov		Minimum initial contig coverage used by Flye assembler (default: $flye_min_cov)
 -mlc	--min_len_contig	Minimum assembly contig length (default: $min_contig_len)
 -mlb	--min_len_bin		Minimum genomic bin size (default: $min_mag_len)
--x	--extra_inputs		Extra inputs for Snakemake workflow (default: none)
-
-MISCELLANEOUS INPUTS:
 -h	--help			Print help information
 -v	--version		Print workflow version number
+
+ADVANCED SETTINGS:
+-fmo	--flye_min_ovlp		Minimum overlap between reads used by Flye assembler (default: auto)
+-fmc	--flye_min_cov		Minimum initial contig coverage used by Flye assembler (default: $flye_min_cov)
+-env	--conda_envs_only	Use conda environments instead of container (default: use container)
+-n	--dryrun		Print summary of jobs for the Snakemake workflow
+-t	--touch			Touch Snakemake output files
+-r	--rule			Run specified Snakemake rule
+-x	--extra_inputs		Extra inputs for Snakemake config file
 
 "
 
@@ -61,6 +85,10 @@ while test $# -gt 0; do
            case "$1" in
                 -h | --help) printf -- "$usage_text"; exit 1;;
                 -v | --version) printf -- "mmlong2-lite, version $version\n"; exit 1;;
+                -n | --dryrun) dryrun="-n"; shift;;	
+                -t | --touch) touch="--touch"; shift;;	
+                -mo | --medaka_off) medaka_status="FALSE"; shift;;	
+                -env | --conda_envs_only) apptainer="" && apptainer_status="FALSE"; shift;;	
                 -np | --nanopore_reads) shift; fastq=$1 && mode="Nanopore-simplex"; shift;;
                 -pb | --pacbio_reads) shift; fastq=$1 && mode="PacBio-HiFi"; shift;;
                 -o | --output_dir) shift; sample=$1; shift;;
@@ -73,7 +101,10 @@ while test $# -gt 0; do
                 -med | --medaka_model) shift; medak_mod_pol=$1; shift;;				
                 -mlc | --min_len_contig) shift; min_contig_len=$1; shift;;
                 -mlb | --min_len_bin) shift; min_mag_len=$1; shift;;
-                -sem | --semibin_model) shift; semibin_mod=$1; shift;;		
+                -sem | --semibin_model) shift; semibin_mod=$1; shift;;	
+                -dbg | --use_metamdbg) mdbg_status="TRUE"; shift;;
+                -vmb | --use_vamb) vamb_status="TRUE"; shift;;
+                -r | --rule) shift; rule=$1; shift;;				
                 -x | --extra_inputs) shift; extra=$1; shift;;				
                 *)
                    printf "ERROR: $1 is not a recognized input! \nType --help for more information on workflow usage.\n"
@@ -92,19 +123,48 @@ if [ $gigabytes_left -lt 100 ]; then  echo "ERROR: Less than 100 GB of free spac
 if ! command -v snakemake &> /dev/null; then echo "ERROR: Dependency (((snakemake))) could not be found" && exit 1; fi
 if ! command -v singularity &> /dev/null; then echo "ERROR: Dependency (((singularity))) could not be found" && exit 1; fi
 if ! command -v dirname &> /dev/null; then echo "ERROR: Dependency (((dirname))) could not be found" && exit 1; fi
+if [ $mode == "Nanopore-simplex" ]; then mdbg_status="FALSE"; fi
+if [ $mdbg_status == "TRUE" ]; then vamb_status="TRUE"; fi
+
+# Setup singularity container
+if [[ "$apptainer" == "apptainer" ]] && [[ ! -d  "$script/sing-mmlong2-lite" ]]
+then
+	echo "Downloading and extracting pre-built Singularity container..."
+	zenodo_get -r $zenodo_id -o $script
+	pv $script/sing-mmlong2-lite*.tar.gz | pigz -dc - | tar xf - -C $script/.
+fi
 
 # Configure early stoppage
-if [ $stage == "assembly" ]; then rule="Assembly"; fi
-if [ $stage == "polishing" ]; then rule="Polishing"; fi
+if [ $stage == "assembly" ]; then if [ $mdbg_status == "FALSE" ]; then rule="Assembly_metaFlye"; else rule="Assembly_metaMDBG"; fi ; fi
+if [ $stage == "polishing" ]; then rule="Polishing_stitch"; fi
+if [ $stage == "filtering" ]; then rule="Filtering_eukaryotes"; fi
+if [ $stage == "singletons" ]; then rule="Singletons_qc"; fi
+if [ $stage == "coverage" ]; then rule="Coverage_aggregate"; fi
 
 # Configure input paths
-if [[ "$sample" = /* ]]; then sample="$(basename $sample)"; fi
+if [[ "$sample" = *"/"* ]]; then if [[ "$sample" = /* ]]; then loc="$(dirname $sample)" && sample="$(basename $sample)"; else loc="$(pwd)/$(dirname $sample)" && sample="$(basename $sample)"; fi; else loc=$(pwd); fi
 if [[ ! "$fastq" = /* ]]; then fastq="$(pwd)/$fastq"; fi
 if [[ ! "$tmp" = /* ]]; then tmp="$(pwd)/$tmp"; fi
 export TMPDIR=$tmp
+export SNAKEMAKE_SOURCE_CACHE=$tmp
+export SNAKEMAKE_OUTPUT_CACHE=$tmp
+export XDG_CACHE_HOME=$tmp
+
+# Configure environments for conda-only mode
+if [[ "$apptainer" == "" ]]
+then
+env_1=$script/envs/env_1.yaml
+env_2=$script/envs/env_2.yaml
+env_3=$script/envs/env_3.yaml
+env_4=$script/envs/env_4.yaml
+env_5=$script/envs/env_5.yaml
+env_6=$script/envs/env_6.yaml
+env_7=$script/envs/env_7.yaml
+env_8=$script/envs/env_8.yaml
+fi
 
 # Configure Singularity bindings
-singularity_binds="-B $(pwd) -B $TMPDIR -B $(dirname $fastq) "
+singularity_binds="-B $(pwd) -B $TMPDIR -B $(dirname $fastq) -B $loc "
 if [ ! $cov == "none" ]; then singularity_binds=$(echo "$singularity_binds -B $(dirname $cov)"); fi
 if [ ! $cov == "none" ]; then while read line || [ -n "$line" ]; do
 	type="$(echo $line | cut -f1 -d",")"
@@ -116,5 +176,7 @@ done < $cov; fi;
 
 # Run snakemake workflow
 echo "Starting Snakemake workflow for $mode reads and $proc multi-threading instances..."
-snakemake --use-singularity --use-conda --singularity-args "$singularity_binds" --cores 1 --nolock -s $snakefile --configfile $config -R $rule --until $rule --config sing=$sing sample=$sample fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov medak_mod_pol=$medak_mod_pol min_contig_len=$min_contig_len min_mag_len=$min_mag_len semibin_mod=$semibin_mod $extra
+snakemake $dryrun $touch --software-deployment-method conda $apptainer --apptainer-args "$singularity_binds" --cores $proc --resources usage=100 --rerun-incomplete --nolock -s $snakefile --configfile $config -R $rule --until $rule \
+	--config sing=$sing sample=$sample loc=$loc fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov mdbg_status=$mdbg_status medaka_status=$medaka_status medak_mod_pol=$medak_mod_pol \
+	min_contig_len=$min_contig_len min_mag_len=$min_mag_len semibin_mod=$semibin_mod vamb_status=$vamb_status apptainer_status=$apptainer_status env_1=$env_1 env_2=$env_2 env_3=$env_3 env_4=$env_4 env_5=$env_5 env_6=$env_6 env_7=$env_7 env_8=$env_8 $extra
 exit 0
