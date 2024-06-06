@@ -30,6 +30,7 @@ mv mmlong2-lite/repo/src/* mmlong2-lite/bin
 chmod +x mmlong2-lite/bin/mmlong2-lite
 mmlong2-lite -h 
 ```
+After setting up the virtual environment, the required software dependencies will be automatically installed when running the workflow for the first time.
 
 ### Full usage:
 ```
