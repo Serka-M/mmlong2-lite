@@ -9,7 +9,7 @@ Lightweight workflow for microbial genome recovery using either Nanopore or PacB
 mmlong2-lite is the microbial genome production part of the [mmlong2](https://github.com/Serka-M/mmlong2) pipeline.
 <br/>
 
-### Core workflow features:
+## Core workflow features:
 * [Snakemake](https://snakemake.readthedocs.io) workflow running dependencies from a [Singularity](https://docs.sylabs.io/guides/latest/user-guide/) container for enhanced reproducibility
 * Bioinformatics tool and parameter optimizations for high complexity metagenomics samples
 * Circular microbial genome extraction as separate genome bins
