@@ -37,6 +37,11 @@ After setting up the virtual environment, the required software dependencies wil
 <br/>
 
 ## Running mmlong2-lite
+### Usage example
+```
+mmlong2-lite -np nanopore_reads.fastq.gz -o output_dir -p 100
+```
+
 ### Full usage
 ```
 MAIN SETTINGS:
