@@ -74,6 +74,16 @@ ADVANCED SETTINGS:
 -x      --extra_inputs          Extra inputs for Snakemake config file
 ```
 
+### Using differential coverage binning
+To perform genome recovery with differential coverage, prepare a 2-column comma-separated dataframe, indicating the additional read datatype (`NP` for Nanopore, `PB` for PacBio, `IL` for short reads) and read file location.
+File example:
+```
+PB,/path/to/your/reads/file1.fastq
+NP,/path/to/your/reads/file2.fastq
+IL,/path/to/your/reads/file3.fastq.gz
+```
+The prepared dataframe can be provided to the workflow through the `-cov` option.
+
 ### Overview of result files
 * `<output_name>_assembly.fasta` - assembled and polished metagenome
 * `<output_name>_bins.tsv` - dataframe for automated binning results
