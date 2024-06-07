@@ -29,7 +29,7 @@ The mmlong2-lite workflow is available through Bioconda:
 conda install -c bioconda mmlong2-lite
 ```
 
-### Installation from source (Conda) 
+### From source (Conda) 
 To create a local [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) environment for running mmlong2-lite workflow, just copy-paste the following:
 ```
 mamba create --prefix mmlong2-lite -c conda-forge -c bioconda snakemake=8.2.3 singularity=3.8.6 zenodo_get=1.6.1 pv=1.6.6 pigz=2.6 tar=1.34 -y
