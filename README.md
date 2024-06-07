@@ -75,8 +75,8 @@ ADVANCED SETTINGS:
 ```
 
 ### Using differential coverage binning
-To perform genome recovery with differential coverage, prepare a 2-column comma-separated dataframe, indicating the additional read datatype (`NP` for Nanopore, `PB` for PacBio, `IL` for short reads) and read file location.
-File example:
+To perform genome recovery with differential coverage, prepare a 2-column comma-separated dataframe, indicating the additional read datatype (`NP` for Nanopore, `PB` for PacBio, `IL` for short reads) and read file location.<br/>
+Dataframe example:
 ```
 PB,/path/to/your/reads/file1.fastq
 NP,/path/to/your/reads/file2.fastq
