@@ -26,7 +26,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 ### Bioconda
 The mmlong2-lite workflow is available through Bioconda:
 ```
-conda install -c bioconda mmlong2-lite
+mamba install -c bioconda mmlong2-lite
 ```
 
 ### From source (Conda) 
