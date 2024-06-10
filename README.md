@@ -1,6 +1,6 @@
+[![DOI](https://anaconda.org/bioconda/mmlong2-lite/badges/version.svg)](https://anaconda.org/bioconda/mmlong2-lite)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/Serka-M/mmlong2-lite/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11499494.svg)](https://doi.org/10.5281/zenodo.11499494)
-[![DOI](https://anaconda.org/bioconda/mmlong2-lite/badges/version.svg)](https://anaconda.org/bioconda/mmlong2-lite)
 
 <p align="center">
 <img align="center" width="250" height="250" src="msc/mmlong2-lite-logo.png" alt="logo" style="zoom:100%;" />
