@@ -101,4 +101,8 @@ The prepared dataframe can be provided to the workflow through the `-cov` option
 * [Dataframe description](msc/mmlong2-lite-dfs.md)
 * [Dependency list](msc/mmlong2-lite-dep.md)
 
+## Citation
+If you use mmlong2-lite in a publication, please cite:
+> Sereika M, Mussig AJ, Jiang C, Knudsen KS, Jensen TBN, Petriglieri F, et al. Recovery of highly contiguous genomes from complex terrestrial habitats reveals over 15,000 novel prokaryotic species and expands characterization of soil and sediment microbial communities. bioRxiv. 2024.12.19.629313. [https://doi.org/10.1101/2024.12.19.629313](https://doi.org/10.1101/2024.12.19.629313)
+
 [//]: # (Written by Mantas Sereika)
