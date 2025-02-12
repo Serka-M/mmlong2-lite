@@ -27,14 +27,14 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 ### Bioconda
 The mmlong2-lite workflow is available through [Bioconda](https://bioconda.github.io/):
 ```
-mamba install -c bioconda mmlong2-lite
+conda create -c conda-forge -c bioconda mmlong2-lite
 ```
 
 ### From source (Conda) 
 To create a local [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) environment for running mmlong2-lite workflow, just copy-paste the following:
 ```
-mamba create --prefix mmlong2-lite -c conda-forge -c bioconda snakemake=8.2.3 singularity=3.8.6 zenodo_get=1.6.1 pv=1.6.6 pigz=2.6 tar=1.34 -y
-mamba activate ./mmlong2-lite || source activate ./mmlong2-lite 
+conda create --prefix mmlong2-lite -c conda-forge -c bioconda snakemake=8.2.3 singularity=3.8.6 zenodo_get=1.6.1 pv=1.6.6 pigz=2.6 tar=1.34 -y
+conda activate ./mmlong2-lite || source activate ./mmlong2-lite 
 git clone https://github.com/Serka-M/mmlong2-lite/ mmlong2-lite/repo
 mv mmlong2-lite/repo/src/* mmlong2-lite/bin
 chmod +x mmlong2-lite/bin/mmlong2-lite
