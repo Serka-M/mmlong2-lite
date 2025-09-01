@@ -26,6 +26,7 @@
 | wf_v | Workflow version |
 | wf_date | Date of workflow completion |
 
+
 ### Column names for <output_name>_usage.tsv
 
 | Category | Description |
@@ -43,6 +44,7 @@
 | mean_load | CPU usage over time, divided by the total running time |
 | cpu_time | Total CPU time (user + system), in seconds |
 
+
 ### Row names for column `stage` in <output_name>_usage.tsv
 | stage | Description |
 | --- | --- |
@@ -53,6 +55,7 @@
 | coverage | Read mapping and contig coverage calculation |
 | binning | Recovery of multi-contig metagenomic bins |
 | summary | Summary statistics for the recovered genomes |
+
 
 ### Row names for column `step` in <output_name>_usage.tsv
 | stage | step | Description |
