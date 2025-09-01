@@ -10,4 +10,4 @@ dependencies:
   - tabix
   - py-bgzip
   - pip:
-      - "medaka-cpu --extra-index-url https://download.pytorch.org/whl/cpu"
+      - "medaka-cpu==2.1.0"
