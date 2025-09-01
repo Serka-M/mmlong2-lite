@@ -45,6 +45,7 @@
 
 ### Row names for column `stage` in <output_name>_usage.tsv
 | stage | Description |
+| --- | --- |
 | assembly | Metagenomic assembly |
 | polishing | Optional polishing of the assembled metagenome |
 | filtering | Metagenome filtering based on contig length and domain-level classification |
@@ -55,6 +56,7 @@
 
 ### Row names for column `step` in <output_name>_usage.tsv
 | stage | step | Description |
+| --- | --- | --- |
 | assembly | myloasm | Metagenomic assembly with myloasm |
 | assembly | metaflye | Metagenomic assembly with metaFlye |
 | assembly | metamdbg | Metagenomic assembly with metaMDBG |
