@@ -1,0 +1,13 @@
+channels:
+  - defaults
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.9
+  - minimap2=2.30
+  - samtools=1.22
+  - bcftools
+  - tabix
+  - py-bgzip
+  - pip:
+      - "medaka-cpu --extra-index-url https://download.pytorch.org/whl/cpu"
