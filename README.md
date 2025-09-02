@@ -20,7 +20,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 * Differential coverage support for improved microbial genome recovery
 * Iterative ensemble binning strategy for improved microbial genome recovery
 
-### Schematic overview
+### Schematic overview of workflow example
 <img align="center" src="msc/mmlong2-lite-wf.png" alt="mmlong2-lite-wf" style="zoom:100%;" />
 <br/>
 
