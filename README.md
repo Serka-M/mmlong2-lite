@@ -101,7 +101,7 @@ IL,/path/to/your/reads/file3.fastq.gz
 ```
 The prepared dataframe can be provided to the workflow through the `-cov` option.
 
-### Overview of result files
+### Overview of main output (results directory)
 * `<output_name>_assembly.fasta` - metagenome assembly file
 * `<output_name>_bins.tsv` - per-bin dataframe for the recovered genomes
 * `<output_name>_usage.tsv` - dataframe for compute resource usage
