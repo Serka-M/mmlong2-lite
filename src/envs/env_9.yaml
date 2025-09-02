@@ -10,4 +10,5 @@ dependencies:
   - tabix
   - py-bgzip
   - pip:
-      - "medaka-cpu==2.1.0"
+      - "medaka-cpu==2.1.1"
+
