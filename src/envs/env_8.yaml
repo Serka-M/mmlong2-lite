@@ -4,4 +4,4 @@ channels:
   - bioconda
 dependencies:
   - checkm2=1.1.0
-  - binette=1.1.1
+  - binette=1.1.2

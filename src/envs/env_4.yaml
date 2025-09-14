@@ -3,5 +3,5 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - metamdbg=1.1
+  - metamdbg=1.2
   - myloasm=0.2.0
