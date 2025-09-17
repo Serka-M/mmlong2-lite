@@ -83,7 +83,7 @@ OPTIONAL SETTINGS:
 ADVANCED SETTINGS:
 -mmo    --myloasm_min_ovlp      Minimum overlap between reads used by myloasm assembler (default: 500)
 -mmc    --myloasm_min_cov       Minimum contig coverage used by myloasm assembler (default: 1)
--xm	--extra_myloasm		Extra inputs for myloasm assembler (default: none)
+-xm		--extra_myloasm			Extra inputs for myloasm assembler (default: none)
 -fmo    --flye_min_ovlp         Minimum overlap between reads used by Flye assembler (default: auto)
 -fmc    --flye_min_cov          Minimum initial contig coverage used by Flye assembler (default: 3)
 -n      --dryrun                Print summary of jobs for the Snakemake workflow
