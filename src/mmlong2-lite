@@ -22,6 +22,7 @@ custom_assembly=$(grep custom_assembly $config | cut -d" " -f2 | tr -d '\r')
 assembly_info=$(grep assembly_info $config | cut -d" " -f2 | tr -d '\r')
 myloasm_min_cov=$(grep myloasm_cov $config | cut -d" " -f2 | tr -d '\r')
 myloasm_min_ovlp=$(grep myloasm_ovlp $config | cut -d" " -f2 | tr -d '\r')
+myloasm_extra=$(grep myloasm_extra $config | cut -d" " -f2 | tr -d '\r')
 flye_min_cov=$(grep flye_cov $config | cut -d" " -f2 | tr -d '\r')
 flye_min_ovlp=$(grep flye_ovlp $config | cut -d" " -f2 | tr -d '\r')
 medaka_status=$(grep medaka_status $config | cut -d" " -f2 | tr -d '\r')
@@ -91,6 +92,7 @@ OPTIONAL SETTINGS:
 ADVANCED SETTINGS:
 -mmo	--myloasm_min_ovlp	Minimum overlap between reads used by myloasm assembler (default: $myloasm_min_ovlp)
 -mmc	--myloasm_min_cov	Minimum contig coverage used by myloasm assembler (default: $myloasm_min_cov)
+-xm	--extra_myloasm		Extra inputs for myloasm assembler (default: none)
 -fmo	--flye_min_ovlp		Minimum overlap between reads used by Flye assembler (default: auto)
 -fmc	--flye_min_cov		Minimum initial contig coverage used by Flye assembler (default: $flye_min_cov)
 -n	--dryrun		Print summary of jobs for the Snakemake workflow
@@ -138,6 +140,7 @@ while test $# -gt 0; do
                 -scl | --skip_cleanup) cleanup_status="FALSE"; shift;;
                 -r | --rule) shift; rule=$1; shift;;				
                 -x | --extra_inputs) shift; extra=$1; shift;;				
+                -xm | --extra_myloasm) shift; myloasm_extra=$(printf '%s' "$1" | tr ' ' ','); shift;;
                 *)
                    printf "ERROR: $1 is not a recognized input! \nType --help for more information on workflow usage.\n"
                    exit 1;
@@ -222,8 +225,8 @@ done < $cov; fi;
 
 # Run snakemake workflow
 echo "Starting Snakemake workflow for $mode reads and $proc multi-threading instances..."
-snakemake $dryrun $touch --software-deployment-method conda $apptainer --apptainer-args "$singularity_binds" --cores $proc --resources usage=100 --rerun-incomplete --nolock -s $snakefile --configfile $config -R $rule --until $rule \
-	--config sing=$sing sample=$sample loc=$loc fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov assembler=$assembler custom_assembly=$custom_assembly assembly_info=$assembly_info myloasm_ovlp=$myloasm_min_ovlp myloasm_cov=$myloasm_min_cov \
+snakemake $dryrun $touch --software-deployment-method conda $apptainer --apptainer-args "$singularity_binds" --cores $proc --resources usage=100 --rerun-incomplete --nolock -s $snakefile --configfile $config -R $rule --until $rule --config \
+  sing=$sing sample=$sample loc=$loc fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov assembler=$assembler custom_assembly=$custom_assembly assembly_info=$assembly_info myloasm_ovlp=$myloasm_min_ovlp myloasm_cov=$myloasm_min_cov myloasm_extra=$myloasm_extra \
   flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov medaka_status=$medaka_status medak_mod_pol=$medak_mod_pol curation_status=$curation_status tiara_status=$tiara_status binmode=$binmode min_contig_len=$min_contig_len min_contig_cov=$min_contig_cov \
 	min_mag_len=$min_mag_len semibin_mod=$semibin_mod cleanup_status=$cleanup_status apptainer_status=$apptainer_status env_1=$env_1 env_2=$env_2 env_3=$env_3 env_4=$env_4 env_5=$env_5 env_6=$env_6 env_7=$env_7 env_8=$env_8 env_9=$env_9 $extra
 exit 0

@@ -1,4 +1,4 @@
-version: 1.2.0
+version: 1.2.1
 zenodo_id: 17012181
 sample: mmlong2
 loc: none
@@ -17,6 +17,7 @@ circ_prob: N
 myloasm_cov: 1
 myloasm_ovlp: 500
 myloasm_bloom: 10
+myloasm_extra: FALSE
 flye_cov: 3
 flye_ovlp: 0
 medaka_status: FALSE

@@ -77,6 +77,10 @@ def get_asm_info(assembler,assembler_config,curation):
     elif assembler == assembler_config: return "tmp/assembly/assembly_info.tsv"
     else: return assembler
 
+def get_myloasm_params(myloasm_extra):
+    if myloasm_extra == "FALSE": return " "
+    else: return re.sub(","," ",myloasm_extra)
+
 def get_prok(tiara_status):
     if tiara_status == "TRUE": return "contigs_filt_prok.txt"
     else: return "whokaryote/prokaryote_contig_headers.txt"
@@ -258,6 +262,7 @@ rule Assembly_myloasm:
         ovlp=config["myloasm_ovlp"],
         bloom=config["myloasm_bloom"],
         circ_prob=config["circ_prob"],
+        extra=get_myloasm_params(config["myloasm_extra"]),
     benchmark:
         os.path.join(loc, sample, "tmp/logs/usage_assembly_myloasm.tsv")
     threads: proc
@@ -267,7 +272,7 @@ rule Assembly_myloasm:
         if [ {mode} == "Nanopore-simplex" ]; then mylo_opt=""; else mylo_opt="--hifi";fi
         if [ {params.ovlp} -eq 500 ]; then mylo_ovlp=""; else mylo_ovlp="--min-ol {params.ovlp}"; fi
         if [ {params.cov} -eq 1 ]; then mylo_cov=""; else mylo_cov="--absolute-coverage-threshold {params.cov}"; fi
-        myloasm {input} -o {loc}/{sample}/tmp/assembly -t {threads} -b {params.bloom} --clean-dir $mylo_cov $mylo_ovlp $mylo_opt
+        myloasm {input} -o {loc}/{sample}/tmp/assembly -t {threads} -b {params.bloom} --clean-dir $mylo_cov $mylo_ovlp $mylo_opt {params.extra}
         sed '/^>/ s/_/ /g' {loc}/{sample}/tmp/assembly/assembly_primary.fa > {output.asm}
         grep ">" {loc}/{sample}/tmp/assembly/assembly_primary.fa | cut -c2- > {loc}/{sample}/tmp/assembly/contigs.txt
         sed -e 's/_/\t/g' -e "s/len-//" -e "s/circular-//" -e "s/yes/Y/" -e "s/no/N/" -e "s/possibly/{params.circ_prob}/" -e "s/depth-//" {loc}/{sample}/tmp/assembly/contigs.txt | sed 's/-.*//' | awk -F'\t' '{{t=$3; $3=$4; $4=t; print}}' OFS='\t' > {output.info}
