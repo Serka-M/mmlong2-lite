@@ -26,6 +26,7 @@
 | wf_v | Workflow version |
 | wf_date | Date of workflow completion |
 
+<br/>
 
 ### Column names for <output_name>_usage.tsv
 
@@ -44,6 +45,7 @@
 | mean_load | CPU usage over time, divided by the total running time |
 | cpu_time | Total CPU time (user + system), in seconds |
 
+<br/>
 
 ### Row names for column `stage` in <output_name>_usage.tsv
 | stage | Description |
@@ -56,6 +58,7 @@
 | binning | Recovery of multi-contig metagenomic bins |
 | summary | Summary statistics for the recovered genomes |
 
+<br/>
 
 ### Row names for column `step` in <output_name>_usage.tsv
 | stage | step | Description |
