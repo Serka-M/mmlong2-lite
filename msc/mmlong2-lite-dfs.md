@@ -52,6 +52,7 @@
 | --- | --- |
 | assembly | Metagenomic assembly |
 | polishing | Optional polishing of the assembled metagenome |
+| curation | Assembly curation |
 | filtering | Metagenome filtering based on contig length and domain-level classification |
 | singletons | Recovery of single-contig genomes |
 | coverage | Read mapping and contig coverage calculation |
