@@ -53,8 +53,8 @@ mmlong2-lite -np nanopore_reads.fastq.gz -o output_dir -p 100
 ### Full usage
 ```
 MAIN SETTINGS:
--np     --nanopore_reads        Path to Nanopore reads (default: none)
--pb     --pacbio_reads          Path to PacBio HiFi reads (default: none)
+-np     --nanopore_reads        Path to Nanopore reads 
+-pb     --pacbio_reads          Path to PacBio HiFi reads
 -o      --output_dir            Output directory name (default: mmlong2)
 -p      --processes             Number of processes/multi-threading (default: 3)
 -bin    --binning_mode          Run pipeline with a specified binning mode (e.g. fast default extended)
@@ -73,6 +73,7 @@ OPTIONAL SETTINGS:
 -scr    --skip_curation         Skip assembly curation and removal of misassemblies (default: run curation)
 -who    --use_whokaryote        Use Whokaryote for identifying eukaryotic contigs (default: use Tiara)
 -sem    --semibin_model         Binning model for SemiBin (default: global)
+-mcc    --min_contig_cov        Minimum assembly contig coverage for binning
 -mlc    --min_len_contig        Minimum assembly contig length (default: 3000)
 -mlb    --min_len_bin           Minimum genomic bin size (default: 250000)
 -scl	--skip_cleanup			Skip cleanup of workflow intermediate files
