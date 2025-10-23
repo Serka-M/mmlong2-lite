@@ -34,7 +34,7 @@ conda create -c conda-forge -c bioconda mmlong2-lite
 ### From source (Conda) 
 To create a local [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) environment for running mmlong2-lite workflow, just copy-paste the following:
 ```
-conda create --prefix mmlong2-lite -c conda-forge -c bioconda snakemake=9.9.0 singularity=3.8.6 zenodo_get=1.6.1 pv=1.6.6 pigz=2.8 tar=1.35 rsync=3.4.1 -y
+conda create --prefix mmlong2-lite -c conda-forge -c bioconda snakemake=9.12.0 singularity=3.8.6 zenodo_get=1.6.1 pv=1.6.6 pigz=2.8 tar=1.35 rsync=3.4.1 -y
 conda activate ./mmlong2-lite || source activate ./mmlong2-lite 
 git clone https://github.com/Serka-M/mmlong2-lite/ mmlong2-lite/repo
 mv mmlong2-lite/repo/src/* mmlong2-lite/bin
