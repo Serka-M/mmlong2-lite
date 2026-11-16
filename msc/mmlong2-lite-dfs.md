@@ -69,10 +69,10 @@
 | max_rss | Maximum Resident Set Size (MB) - peak amount of non-swapped physical memory used by the process |
 | max_vms | Maximum Virtual Memory Size (MB) - total amount of virtual memory used by the process |
 | max_uss | Maximum Unique Set Size (MB) - peak memory unique to the process |
-| max_pss | Maximum Proportional Set Size (MB) - peak shared memory, divided equally among processes sharing it |
+| max_pss | Maximum Proportional Set Size (MB) - peak unique memory plus shared memory, divided equally among processes sharing it |
 | io_in | The number of MB read (cumulative) |
 | io_out | The number of MB written (cumulative) |
-| mean_load | CPU usage over time, divided by the total running time |
+| mean_load | CPU usage (%) over time, divided by the total running time |
 | cpu_time | Total CPU time (user + system), in seconds |
 | wf_name | Workflow output name |
 | wf_read_mode | Workflow long-read mode |
