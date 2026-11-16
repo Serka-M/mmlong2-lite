@@ -44,7 +44,7 @@ EUKARYOTE BINNING SETTINGS:
 -spk	--skip_prokaryote	Skip prokaryotic bin recovery (default: run prokaryote recovery)
 -mec	--min_euk_cov		Minimum contig coverage for eukaryote binning (default: $min_euk_cov)
 -mle	--min_len_euk		Minimum eukaryotic bin size (default: $min_euk_len bp)
--mce	--min_compl_euk		Minimum eukaryotic bin completness by EukCC (default: ${min_compl_euk}%)
+-mce	--min_compl_euk		Minimum eukaryotic bin completeness by EukCC (default: ${min_compl_euk}%)
 -sme	--skip_metabat2_euk	Skip MetaBAT2 binner for eukaryote binning (default: run MetaBAT2)
 -sqe	--skip_quickbin_euk	Skip QuickBin binner for eukaryote binning (default: run QuickBin)
 -sve	--skip_vamb_euk		Skip VAMB binner for eukaryote binning (default: run VAMB)

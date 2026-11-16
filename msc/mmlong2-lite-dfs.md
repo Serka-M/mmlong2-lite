@@ -37,9 +37,9 @@
 | bin | Eukaryotic genome bin (MAG) identifier |
 | completeness_eukcc | Genome bin completeness estimate, reported by EukCC |
 | contamination_eukcc | Genome bin contamination estimate, reported by EukCC |
-| lineage_eukcc | Genome bin lineage as dash-separated NCBI taxonomy IDs, reported by EukCC |
-| lineage_qc | Status of the lineage quality check (e.g. PASS) |
-| lineage_name | Name of the eukaryotic lineage assigned to the genome bin (e.g. Stramenopiles) |
+| lineage_eukcc | Lineage of the marker gene set used for the genome bin as dash-separated NCBI taxonomy IDs, reported by EukCC |
+| lineage_qc | Status of the marker gene set quality check, reported by EukCC (PASS or FAIL) |
+| lineage_name | Name of the major eukaryotic group of the genome bin (e.g. Stramenopiles), derived from the EukCC lineage |
 | contigs | Number of contigs, reported by Quast |
 | longest_contig | Longest contig length (bp), reported by Quast |
 | genome_size | Genome bin size (bp), reported by Quast |
@@ -76,7 +76,7 @@
 | cpu_time | Total CPU time (user + system), in seconds |
 | wf_name | Workflow output name |
 | wf_read_mode | Workflow long-read mode |
-| wf_binning_mode | Workflow binning mode |
+| wf_bin_mode | Workflow binning mode |
 | wf_v | Workflow version |
 | wf_date | Date of workflow completion |
 
@@ -111,7 +111,7 @@
 | curation | screening | Misassembly screening |
 | curation | aggregate | Selection of contigs to curate |
 | curation | selection | Generation of curated assembly |
-| filtering | length| Metagenome filtering based on contig length |
+| filtering | length | Metagenome filtering based on contig length |
 | filtering | tiara | Detection of eukaryotic contigs with Tiara |
 | filtering | whokaryote | Detection of eukaryotic contigs with Whokaryote |
 | filtering | eukaryotes | Separation of eukaryotic contigs from the metagenome |
@@ -134,11 +134,11 @@
 | binning | qc | Quality control of the recovered bins (per-round) |
 | binning | prep-euk | Preparation for binning of eukaryotic contigs |
 | binning | remag | Binning of eukaryotic contigs with REMAG |
-| binning | eukclust | Clustering of the eukaryotic bins recovered by different binners |
 | binning | eukcc_prep | Preparation for quality control of eukaryotic bins |
 | binning | eukcc | Quality control of eukaryotic bins with EukCC |
-| binning | eukagr | Aggregation of quality estimates for eukaryotic bins |
+| binning | eukclust | Clustering of the eukaryotic bins recovered by different binners |
 | binning | eukselect | Selection of the final eukaryotic bins |
+| binning | eukagr | Aggregation of the final eukaryotic bins |
 | binning | aggregate | Aggregation of the recovered bins |
 | binning | qc2 | Secondary quality control of the recovered bins |
 | summary | cov | Genome coverage and relative abundance calculation with CoverM |

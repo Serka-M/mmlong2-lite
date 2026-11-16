@@ -1,4 +1,4 @@
-[![DOI](https://anaconda.org/bioconda/mmlong2-lite/badges/version.svg)](https://anaconda.org/bioconda/mmlong2-lite)
+[![Bioconda](https://anaconda.org/bioconda/mmlong2-lite/badges/version.svg)](https://anaconda.org/bioconda/mmlong2-lite)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/Serka-M/mmlong2-lite/blob/main/LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.1038/s41564--025--02062--z-blue)](https://doi.org/10.1038/s41564-025-02062-z)
 
@@ -13,7 +13,7 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 ## Workflow description
 ### Core features
 * [Snakemake](https://snakemake.readthedocs.io) workflow running dependencies from a [Singularity](https://docs.sylabs.io/guides/latest/user-guide/) container for enhanced reproducibility
-* Bioinformatics tool and parameter optimizations for high complexity metagenomics samples
+* Bioinformatics tool and parameter optimizations for high-complexity metagenomic samples
 * Automated metagenomic assembly curation for identification and removal of misassemblies
 * Circular microbial genome extraction as separate genome bins
 * Binning of prokaryotic and eukaryotic metagenome assembled genomes
@@ -22,7 +22,6 @@ mmlong2-lite is the microbial genome production part of the [mmlong2](https://gi
 
 ### Schematic overview of workflow example
 <img align="center" src="msc/mmlong2-lite-wf.png" alt="mmlong2-lite-wf" style="zoom:100%;" />
-<br/>
 
 ## Installation
 ### Bioconda
@@ -36,12 +35,11 @@ To create a local [Conda](https://docs.conda.io/projects/conda/en/latest/user-gu
 ```
 conda create --prefix mmlong2-lite -c conda-forge -c bioconda snakemake=9.9.0 singularity=3.8.6 zenodo_get pv pigz tar -y
 conda activate ./mmlong2-lite || source activate ./mmlong2-lite 
-git clone https://github.com/Serka-M/mmlong2-lite/ $CONDA_PREFIX/lib
+git clone https://github.com/Serka-M/mmlong2-lite/ $CONDA_PREFIX/lib/mmlong2-lite
 ln -s $CONDA_PREFIX/lib/mmlong2-lite/src/mmlong2-lite.sh $CONDA_PREFIX/bin/mmlong2-lite
 chmod +x $CONDA_PREFIX/bin/mmlong2-lite
 mmlong2-lite -h
 ```
-<br/>
 
 ## Running mmlong2-lite
 ### Quick start
@@ -68,7 +66,7 @@ OPTIONAL SETTINGS:
 -bin    --binning_mode          Run pipeline with a specified prokaryote binning mode (e.g. fast default extended)
 -cov    --coverage              CSV dataframe for differential coverage binning (e.g. NP/PB/IL,/path/to/reads.fastq)
 -run    --run_until             Run pipeline until a specified stage completes
--tmp    --temporary_dir         Directory for temporary files (default: )
+-tmp    --temporary_dir         Directory for temporary files
 -fly    --use_metaflye          Use metaFlye for metagenomic assembly (default: use myloasm)
 -dbg    --use_metamdbg          Use metaMDBG for metagenomic assembly (default: use myloasm)
 -myl    --use_myloasm           Use myloasm for metagenomic assembly
@@ -95,7 +93,7 @@ EUKARYOTE BINNING SETTINGS:
 -spk    --skip_prokaryote       Skip prokaryotic bin recovery (default: run prokaryote recovery)
 -mec    --min_euk_cov           Minimum contig coverage for eukaryote binning (default: 0)
 -mle    --min_len_euk           Minimum eukaryotic bin size (default: 2000000 bp)
--mce    --min_compl_euk         Minimum eukaryotic bin completness by EukCC (default: 30%)
+-mce    --min_compl_euk         Minimum eukaryotic bin completeness by EukCC (default: 30%)
 -sme    --skip_metabat2_euk     Skip MetaBAT2 binner for eukaryote binning (default: run MetaBAT2)
 -sqe    --skip_quickbin_euk     Skip QuickBin binner for eukaryote binning (default: run QuickBin)
 -sve    --skip_vamb_euk         Skip VAMB binner for eukaryote binning (default: run VAMB)

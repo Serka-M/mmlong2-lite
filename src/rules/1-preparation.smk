@@ -283,10 +283,10 @@ rule Curation_aggregate:
                         start = head(.x, -1), end = tail(.x, -1)) }})) %>% select(contig, intervals) %>% unnest(intervals)
 
         regions <- bind_rows(cov_, clip_)
-        sub <- sub %>% semi_join(regions, by = "contig") %>% rowwise() %>% filter(any(
-                        regions$contig == contig &
-                        regions$start <= end &
-                        regions$end >= start )) %>% ungroup() %>% filter(abs(end - start) >= {params.len})
+        sub <- sub %>% semi_join(regions, by = "contig") %>% rowwise() %>% filter(!contig %in% cov$contig | any(
+                        cov_$contig == contig &
+                        cov_$start <= start &
+                        cov_$end >= end )) %>% ungroup() %>% filter(abs(end - start) >= {params.len})
         write.table(sub,"{output.df}",quote=F,row.names=FALSE,col.names=FALSE,sep="\t")
 
         asm <- read.delim("{input.asm}", sep="\t", header=F)

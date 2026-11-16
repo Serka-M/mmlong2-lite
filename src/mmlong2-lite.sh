@@ -59,6 +59,7 @@ env_10=$(grep env_10 $config | cut -d" " -f2 | tr -d '\r')
 extra=""
 dryrun=""
 touch=""
+conda_prefix=""
 stage="OFF"
 stages=("OFF" "assembly" "curation" "filtering" "coverage" "singletons" "prokaryotes" "eukaryotes")
 binmode=$(grep binmode $config | cut -d" " -f2 | tr -d '\r')
@@ -70,11 +71,11 @@ tmp=$TMPDIR
 # Assign inputs
 while test $# -gt 0; do
            case "$1" in
-                -h | --help) eval "echo \"$(<"$help")\""; exit 1;;
-                -v | --version) printf -- "mmlong2-lite, version $version\n"; exit 1;;
+                -h | --help) eval "echo \"$(<"$help")\""; exit 0;;
+                -v | --version) printf -- "mmlong2-lite, version $version\n"; exit 0;;
                 -n | --dryrun) dryrun="-n"; shift;;	
                 -t | --touch) touch="--touch"; shift;;	
-                -env | --conda_envs_only) apptainer="" && apptainer_status="FALSE"; shift;;	
+                -env | --conda_envs_only) apptainer="" && apptainer_status="FALSE" && conda_prefix="--conda-prefix $script/conda"; shift;;	
                 -np | --nanopore_reads) shift; fastq=$1 && mode="Nanopore-simplex"; shift;;
                 -pb | --pacbio_reads) shift; fastq=$1 && mode="PacBio-HiFi"; shift;;
                 -o | --output_dir) shift; sample=$1; shift;;
@@ -142,10 +143,10 @@ if [ $mode == "PacBio-HiFi" ]; then medaka_status="FALSE"; fi
 if [[ "$apptainer" == "apptainer" ]] && [[ ! -d  "$script/sing-mmlong2-lite" ]]
 then
 	echo "Downloading and extracting pre-built Singularity container..."
-    sleep 10s
+	sleep 10s
 	zenodo_get -r $zenodo_id -o $script -v 3
 	pv $script/sing-mmlong2-lite-*.tar.gz | pigz -dc - | tar xf - -C $script/.
-    rm $script/sing-mmlong2-lite-*.tar.gz
+	rm $script/sing-mmlong2-lite-*.tar.gz
 fi
 
 # Configure early stoppage
@@ -180,7 +181,7 @@ export LANG=C.UTF-8
 # Configure environments for conda-only mode
 if [[ "$apptainer" == "" ]]
 then
-conda config --set channel_priority flexible
+export CONDA_CHANNEL_PRIORITY=flexible
 env_1=$script/envs/env_1.yaml
 env_2=$script/envs/env_2.yaml
 env_3=$script/envs/env_3.yaml
@@ -209,7 +210,7 @@ done < $cov; fi;
 
 # Run snakemake workflow
 echo "Starting Snakemake workflow for $sample with $mode reads and $proc multi-threading instances..."
-snakemake $dryrun $touch --software-deployment-method conda $apptainer --apptainer-args "$singularity_binds" --cores $proc --resources usage=100 --rerun-incomplete --nolock -s $snakefile --configfile $config -R $rule --until $rule --config \
+snakemake $dryrun $touch --software-deployment-method conda $apptainer $conda_prefix --apptainer-args "$singularity_binds" --cores $proc --resources usage=100 --rerun-incomplete --nolock -s $snakefile --configfile $config -R $rule --until $rule --config \
   sing=$sing sample=$sample loc=$loc fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov assembler=$assembler custom_assembly=$custom_assembly assembly_info=$assembly_info asm_extra=$asm_extra \
   medaka_status=$medaka_status medak_mod_pol=$medak_mod_pol curation_status=$curation_status rename_status=$rename_status eukfilt_status=$eukfilt_status tiara_status=$tiara_status binmode=$binmode min_contig_len=$min_contig_len min_prok_cov=$min_prok_cov min_euk_cov=$min_euk_cov prok_status=$prok_status euk_status=$euk_status min_compl_euk=$min_compl_euk \
 	min_prok_len=$min_prok_len min_euk_len=$min_euk_len semibin_mod=$semibin_mod lorbin_status=$lorbin_status skip_metabat2_euk=$skip_metabat2_euk skip_quickbin_euk=$skip_quickbin_euk skip_vamb_euk=$skip_vamb_euk skip_semibin2_euk=$skip_semibin2_euk skip_remag_euk=$skip_remag_euk cleanup_status=$cleanup_status apptainer_status=$apptainer_status \
