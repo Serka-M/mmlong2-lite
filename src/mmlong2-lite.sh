@@ -109,7 +109,7 @@ while test $# -gt 0; do
                 -sve | --skip_vamb_euk) skip_vamb_euk="TRUE"; shift;;
                 -sse | --skip_semibin2_euk) skip_semibin2_euk="TRUE"; shift;;
                 -sre | --skip_remag_euk) skip_remag_euk="TRUE"; shift;;
-                -scr | --skip_assembly_curation) curation_status="FALSE"; shift;;
+                -scr | --skip_curation) curation_status="FALSE"; shift;;
                 -scl | --skip_cleanup) cleanup_status="FALSE"; shift;;
                 -r | --rule) shift; rule=$1; shift;;				
                 -x | --extra_inputs) shift; extra=$1; shift;;				
