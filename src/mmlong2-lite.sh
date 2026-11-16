@@ -1,14 +1,16 @@
 #!/bin/bash
 # DESCRIPTION: Wrapper script for running mmlong2-lite Snakemake workflow
-# AUTHOR: Mantas Sereika, mase@bio.aau.dk, 2025
+# AUTHOR: Mantas Sereika, mase@bio.aau.dk, 2026
 # LICENSE: GNU General Public License
 
 # Pre-set default settings
 set -eo pipefail
-script=$(dirname $(which snakemake))
-config=$script/mmlong2-lite-config.yaml
+script="$(dirname $(realpath "$0"))"
+config=$script/config/mmlong2-lite.yaml
 snakefile=$script/mmlong2-lite.smk
+help=$script/help.txt
 sing=$script/sing-mmlong2-lite
+sing_bind=$(grep sing_bind $config | cut -d" " -f2 | tr -d '\r')
 version=$(grep version $config | cut -d" " -f2 | tr -d '\r')
 zenodo_id=$(grep zenodo_id $config | cut -d" " -f2 | tr -d '\r')
 mode=$(grep mode $config | cut -d" " -f2 | tr -d '\r')
@@ -20,22 +22,31 @@ cov=$(grep reads_diffcov $config | cut -d" " -f2 | tr -d '\r')
 assembler=$(grep assembler $config | cut -d" " -f2 | tr -d '\r')
 custom_assembly=$(grep custom_assembly $config | cut -d" " -f2 | tr -d '\r')
 assembly_info=$(grep assembly_info $config | cut -d" " -f2 | tr -d '\r')
-myloasm_min_cov=$(grep myloasm_cov $config | cut -d" " -f2 | tr -d '\r')
-myloasm_min_ovlp=$(grep myloasm_ovlp $config | cut -d" " -f2 | tr -d '\r')
-myloasm_extra=$(grep myloasm_extra $config | cut -d" " -f2 | tr -d '\r')
-flye_min_cov=$(grep flye_cov $config | cut -d" " -f2 | tr -d '\r')
-flye_min_ovlp=$(grep flye_ovlp $config | cut -d" " -f2 | tr -d '\r')
+asm_extra=$(grep asm_extra $config | cut -d" " -f2 | tr -d '\r')
 medaka_status=$(grep medaka_status $config | cut -d" " -f2 | tr -d '\r')
 medak_mod_pol=$(grep medak_mod_pol $config | cut -d" " -f2 | tr -d '\r')
 curation_status=$(grep curation_status $config | cut -d" " -f2 | tr -d '\r')
+rename_status=$(grep rename_status $config | cut -d" " -f2 | tr -d '\r')
 tiara_status=$(grep tiara_status $config | cut -d" " -f2 | tr -d '\r')
+eukfilt_status=$(grep eukfilt_status $config | cut -d" " -f2 | tr -d '\r')
+euk_status=$(grep euk_status $config | cut -d" " -f2 | tr -d '\r')
+prok_status=$(grep prok_status $config | cut -d" " -f2 | tr -d '\r')
 min_contig_len=$(grep min_contig_len $config | cut -d" " -f2 | tr -d '\r')
-min_contig_cov=$(grep min_contig_cov $config | cut -d" " -f2 | tr -d '\r')
-min_mag_len=$(grep min_mag_len $config | cut -d" " -f2 | tr -d '\r')
+min_prok_cov=$(grep min_prok_cov $config | cut -d" " -f2 | tr -d '\r')
+min_euk_cov=$(grep min_euk_cov $config | cut -d" " -f2 | tr -d '\r')
+min_prok_len=$(grep min_prok_len $config | cut -d" " -f2 | tr -d '\r')
+min_euk_len=$(grep min_euk_len $config | cut -d" " -f2 | tr -d '\r')
 semibin_mod=$(grep semibin_mod $config | cut -d" " -f2 | tr -d '\r')
+min_compl_euk=$(grep min_compl_euk $config | cut -d" " -f2 | tr -d '\r')
+skip_metabat2_euk=$(grep skip_metabat2_euk $config | cut -d" " -f2 | tr -d '\r')
+skip_quickbin_euk=$(grep skip_quickbin_euk $config | cut -d" " -f2 | tr -d '\r')
+skip_vamb_euk=$(grep skip_vamb_euk $config | cut -d" " -f2 | tr -d '\r')
+skip_semibin2_euk=$(grep skip_semibin2_euk $config | cut -d" " -f2 | tr -d '\r')
+skip_remag_euk=$(grep skip_remag_euk $config | cut -d" " -f2 | tr -d '\r')
+lorbin_status=$(grep lorbin_status $config | cut -d" " -f2 | tr -d '\r')
 cleanup_status=$(grep cleanup_status $config | cut -d" " -f2 | tr -d '\r')
 apptainer_status=$(grep apptainer_status $config | cut -d" " -f2 | tr -d '\r')
-env_1=$(grep env_1 $config | cut -d" " -f2 | tr -d '\r')
+env_1=$(grep env_1: $config | cut -d" " -f2 | tr -d '\r')
 env_2=$(grep env_2 $config | cut -d" " -f2 | tr -d '\r')
 env_3=$(grep env_3 $config | cut -d" " -f2 | tr -d '\r')
 env_4=$(grep env_4 $config | cut -d" " -f2 | tr -d '\r')
@@ -44,105 +55,67 @@ env_6=$(grep env_6 $config | cut -d" " -f2 | tr -d '\r')
 env_7=$(grep env_7 $config | cut -d" " -f2 | tr -d '\r')
 env_8=$(grep env_8 $config | cut -d" " -f2 | tr -d '\r')
 env_9=$(grep env_9 $config | cut -d" " -f2 | tr -d '\r')
+env_10=$(grep env_10 $config | cut -d" " -f2 | tr -d '\r')
 extra=""
 dryrun=""
 touch=""
 stage="OFF"
-stages=("OFF" "assembly" "curation" "filtering" "singletons" "coverage" "binning")
+stages=("OFF" "assembly" "curation" "filtering" "coverage" "singletons" "prokaryotes" "eukaryotes")
 binmode=$(grep binmode $config | cut -d" " -f2 | tr -d '\r')
 binmodes=("fast" "default" "extended")
-rule="Finalise"
+rule="Finalise_prok"
 apptainer="apptainer"
 tmp=$TMPDIR
-
-# Usage instructions for terminal interface
-usage_text="
-mmlong2-lite: bioinformatics pipeline for microbial genome recovery using long reads
-For issues or feedback please use https://github.com/Serka-M/mmlong2-lite/issues or e-mail to mase@bio.aau.dk 
-
-MAIN SETTINGS:
--np	--nanopore_reads	Path to Nanopore reads (default: $fastq)
--pb	--pacbio_reads		Path to PacBio HiFi reads (default: $fastq)
--o	--output_dir		Output directory name (default: $sample)
--p	--processes		Number of processes/multi-threading (default: $proc)
--bin	--binning_mode		Run pipeline with a specified binning mode (e.g. ${binmodes[*]})
- 
-OPTIONAL SETTINGS:
--cov 	--coverage		CSV dataframe for differential coverage binning (e.g. NP/PB/IL,/path/to/reads.fastq)
--run	--run_until		Run pipeline until a specified stage completes (e.g. ${stages[*]/$stage})
--tmp	--temporary_dir		Directory for temporary files (default: $tmp)
--fly	--use_metaflye		Use metaFlye for metagenomic assembly (default: use $assembler)
--dbg	--use_metamdbg		Use metaMDBG for metagenomic assembly (default: use $assembler)
--myl	--use_myloasm		Use myloasm for metagenomic assembly (default: use $assembler)
--ca	--custom_assembly	Use a custom assembly (default: use $assembler)
--cai	--custom_assembly_info	Optional assembly information file (metaFlye format) for custom assembly
--med	--use_medaka		Use Medaka for polishing Nanopore assemblies (default: skip Medaka)
--mm	--medaka_model		Medaka polishing model (default: $medak_mod_pol)
--scr	--skip_curation		Skip assembly curation and removal of misassemblies (default: run curation)
--who	--use_whokaryote	Use Whokaryote for identifying eukaryotic contigs (default: use Tiara)
--sem	--semibin_model		Binning model for SemiBin (default: $semibin_mod)
--mcl	--min_contig_len	Minimum assembly contig length for binning (default: $min_contig_len)
--mcc	--min_contig_cov	Minimum assembly contig coverage for binning (default: $min_contig_cov)
--mlb	--min_len_bin		Minimum genomic bin size (default: $min_mag_len)
--scl	--skip_cleanup		Skip cleanup of workflow intermediate files
--env	--conda_envs_only	Use conda environments instead of container (default: use container)
--h	--help			Print help information
--v	--version		Print workflow version number
-
-ADVANCED SETTINGS:
--mmo	--myloasm_min_ovlp	Minimum overlap between reads used by myloasm assembler (default: $myloasm_min_ovlp)
--mmc	--myloasm_min_cov	Minimum contig coverage used by myloasm assembler (default: $myloasm_min_cov)
--xm	--extra_myloasm		Extra inputs for myloasm assembler (default: none)
--fmo	--flye_min_ovlp		Minimum overlap between reads used by Flye assembler (default: auto)
--fmc	--flye_min_cov		Minimum initial contig coverage used by Flye assembler (default: $flye_min_cov)
--n	--dryrun		Print summary of jobs for the Snakemake workflow
--t	--touch			Touch Snakemake output files
--r	--rule			Run specified Snakemake rule
--x	--extra_inputs		Extra inputs for Snakemake config file
-
-Aalborg University, Denmark, 2025
-
-"
 
 # Assign inputs
 while test $# -gt 0; do
            case "$1" in
-                -h | --help) printf -- "$usage_text"; exit 1;;
+                -h | --help) eval "echo \"$(<"$help")\""; exit 1;;
                 -v | --version) printf -- "mmlong2-lite, version $version\n"; exit 1;;
                 -n | --dryrun) dryrun="-n"; shift;;	
                 -t | --touch) touch="--touch"; shift;;	
-                -med | --use_medaka) medaka_status="TRUE"; shift;;
-                -who | --use_whokaryote) tiara_status="FALSE"; shift;;	
                 -env | --conda_envs_only) apptainer="" && apptainer_status="FALSE"; shift;;	
                 -np | --nanopore_reads) shift; fastq=$1 && mode="Nanopore-simplex"; shift;;
                 -pb | --pacbio_reads) shift; fastq=$1 && mode="PacBio-HiFi"; shift;;
                 -o | --output_dir) shift; sample=$1; shift;;
                 -p | --processes) shift; proc=$1; shift;;
+                -med | --use_medaka) medaka_status="TRUE"; shift;;
+                -who | --use_whokaryote) tiara_status="FALSE"; shift;;
+                -srn | --skip_rename) rename_status="FALSE"; shift;;
+                -sef | --skip_eukfilt) eukfilt_status="FALSE"; shift;;
+                -euk | --bin_eukaryote) euk_status="TRUE"; shift;;
+                -spk | --skip_prokaryote) prok_status="FALSE" && euk_status="TRUE" && rule="Finalise_euk"; shift;;
                 -cov | --coverage) shift; cov=$1; shift;;
                 -bin | --binning_mode) shift; binmode=$1; shift;;
                 -run | --run_until) shift; stage=$1; shift;;
                 -tmp | --temporary_dir) shift; tmp=$1; shift;;
                 -ca | --custom_assembly) shift; custom_assembly=$1 && assembler="custom"; shift;; 
                 -cai | --custom_assembly_info) shift; assembly_info=$1; shift;; 
-                -mmo | --myloasm_min_ovlp) shift; myloasm_min_ovlp=$1; shift;;
-                -mmc | --myloasm_min_cov) shift; myloasm_min_cov=$1; shift;;
-                -fmo | --flye_min_ovlp) shift; flye_min_ovlp=$1; shift;;
-                -fmc | --flye_min_cov) shift; flye_min_cov=$1; shift;;
                 -mm | --medaka_model) shift; medak_mod_pol=$1 && medaka_status="TRUE"; shift;;				
                 -mcl | --min_contig_len) shift; min_contig_len=$1; shift;;
-                -mcc | --min_contig_cov) shift; min_contig_cov=$1; shift;;
-                -mlb | --min_len_bin) shift; min_mag_len=$1; shift;;
+                -mpc | --min_prok_cov) shift; min_prok_cov=$1; shift;;
+                -mec | --min_euk_cov) shift; min_euk_cov=$1; shift;;
+                -mlp | --min_len_prok) shift; min_prok_len=$1; shift;;
+                -mle | --min_len_euk) shift; min_euk_len=$1; shift;;
                 -sem | --semibin_model) shift; semibin_mod=$1; shift;;	
                 -fly | --use_metaflye) assembler="metaflye"; shift;;
                 -dbg | --use_metamdbg) assembler="metamdbg"; shift;;
                 -myl | --use_myloasm) assembler="myloasm"; shift;;
+                -lrb | --use_lorbin) lorbin_status="TRUE" && binmode="extended"; shift;;
+                -mce | --min_compl_euk) shift; min_compl_euk=$1; shift;;  
+                -sme | --skip_metabat2_euk) skip_metabat2_euk="TRUE"; shift;;
+                -sqe | --skip_quickbin_euk) skip_quickbin_euk="TRUE"; shift;;
+                -sve | --skip_vamb_euk) skip_vamb_euk="TRUE"; shift;;
+                -sse | --skip_semibin2_euk) skip_semibin2_euk="TRUE"; shift;;
+                -sre | --skip_remag_euk) skip_remag_euk="TRUE"; shift;;
                 -scr | --skip_assembly_curation) curation_status="FALSE"; shift;;
                 -scl | --skip_cleanup) cleanup_status="FALSE"; shift;;
                 -r | --rule) shift; rule=$1; shift;;				
                 -x | --extra_inputs) shift; extra=$1; shift;;				
-                -xm | --extra_myloasm) shift; myloasm_extra=$(printf '%s' "$1" | tr ' ' ','); shift;;
+                -xa | --extra_asm) shift; asm_extra=$(printf '%s' "$1" | tr ' ' ','); shift;;
+                -xbp | --extra_bind_path) shift; sing_bind=$1; shift;;
                 *)
-                   printf "ERROR: $1 is not a recognized input! \nType --help for more information on workflow usage.\n"
+                   printf "ERROR: $1 is not a recognized input! \nType mmlong2-lite --help for more information on workflow usage.\n"
                    exit 1;
                    ;;
           esac
@@ -162,14 +135,17 @@ if ! command -v conda &> /dev/null; then echo "ERROR: Dependency (((conda))) cou
 if ! command -v snakemake &> /dev/null; then echo "ERROR: Dependency (((snakemake))) could not be found" && exit 1; fi
 if ! command -v singularity &> /dev/null; then echo "ERROR: Dependency (((singularity))) could not be found" && exit 1; fi
 if ! command -v dirname &> /dev/null; then echo "ERROR: Dependency (((dirname))) could not be found" && exit 1; fi
+if [[ "$euk_status" == "TRUE" ]] && [[ "$skip_metabat2_euk" == "TRUE" ]] && [[ "$skip_vamb_euk" == "TRUE" ]] && [[ "$skip_quickbin_euk" == "TRUE" ]] && [[ "$skip_semibin2_euk" == "TRUE" ]] && [[ "$skip_remag_euk" == "TRUE" ]]; then echo "ERROR: No binners selected for eukaryote genome recovery" && exit 1; fi
 if [ $mode == "PacBio-HiFi" ]; then medaka_status="FALSE"; fi
 
 # Setup singularity container
 if [[ "$apptainer" == "apptainer" ]] && [[ ! -d  "$script/sing-mmlong2-lite" ]]
 then
 	echo "Downloading and extracting pre-built Singularity container..."
-	zenodo_get -r $zenodo_id -o $script
-	pv $script/sing-mmlong2-lite*.tar.gz | pigz -dc - | tar xf - -C $script/.
+    sleep 10s
+	zenodo_get -r $zenodo_id -o $script -v 3
+	pv $script/sing-mmlong2-lite-*.tar.gz | pigz -dc - | tar xf - -C $script/.
+    rm $script/sing-mmlong2-lite-*.tar.gz
 fi
 
 # Configure early stoppage
@@ -178,10 +154,11 @@ if [ $stage == "assembly" ]; then if [ $assembler == "metaflye" ]; then rule="As
 if [ $stage == "assembly" ]; then if [ $assembler == "metamdbg" ]; then rule="Assembly_metaMDBG"; fi ; fi
 if [ $stage == "assembly" ]; then if [ $assembler == "custom" ]; then rule="Assembly_custom"; fi ; fi
 if [ $stage == "curation" ]; then rule="Curation_selection" && curation_status="TRUE"; fi
-if [ $stage == "filtering" ]; then rule="Filtering_eukaryotes"; fi
-if [ $stage == "singletons" ]; then rule="Singletons_qc"; fi
+if [ $stage == "filtering" ]; then rule="Filtering_euk"; fi
 if [ $stage == "coverage" ]; then rule="Coverage_aggregate"; fi
-if [ $stage == "binning" ]; then rule="Binning_aggregate"; fi
+if [ $stage == "singletons" ]; then rule="Singletons_checkm2"; fi
+if [ $stage == "prokaryotes" ]; then rule="Binning_checkm1" && prok_status="TRUE" && euk_status="FALSE"; fi
+if [ $stage == "eukaryotes" ]; then rule="Binning_aggregate_euk" && prok_status="FALSE" && euk_status="TRUE"; fi
 
 # Configure input paths
 if [[ "$sample" = *"/"* ]]; then if [[ "$sample" = /* ]]; then loc="$(dirname $sample)" && sample="$(basename $sample)"; else loc="$(pwd)/$(dirname $sample)" && sample="$(basename $sample)"; fi; else loc=$(pwd); fi
@@ -189,13 +166,16 @@ if [[ ! "$fastq" = /* ]]; then fastq="$(pwd)/$fastq"; fi
 if [[ ! "$tmp" = /* ]]; then tmp="$(pwd)/$tmp"; fi
 if [[ ! "$cov" = /* && ! "$cov" = "none" ]]; then cov="$(pwd)/$cov"; fi
 
-# Configure cache and temporary file paths
+# Configure cache, temporary file paths, log verbosity, and locale
 if [ ! -d ".pycache" ]; then mkdir .pycache; fi
 export PYTHONPYCACHEPREFIX="$(pwd)/.pycache"
 export TMPDIR=$tmp
 export SNAKEMAKE_SOURCE_CACHE=$tmp
 export SNAKEMAKE_OUTPUT_CACHE=$tmp
 export XDG_CACHE_HOME=$tmp
+export PYTHONWARNINGS="ignore::SyntaxWarning"
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
 
 # Configure environments for conda-only mode
 if [[ "$apptainer" == "" ]]
@@ -210,10 +190,14 @@ env_6=$script/envs/env_6.yaml
 env_7=$script/envs/env_7.yaml
 env_8=$script/envs/env_8.yaml
 env_9=$script/envs/env_9.yaml
+env_10=$script/envs/env_10.yaml
 fi
 
 # Configure Singularity bindings
 singularity_binds="-B $(pwd) -B $TMPDIR -B $(dirname $fastq) -B $loc "
+if [ ! $custom_assembly == "FALSE" ]; then singularity_binds=$(echo "$singularity_binds -B $(dirname $custom_assembly)"); fi
+if [ ! $assembly_info == "FALSE" ]; then singularity_binds=$(echo "$singularity_binds -B $(dirname $assembly_info)"); fi
+if [ ! "$sing_bind" == "none" ]; then singularity_binds=$(echo "$singularity_binds -B $sing_bind"); fi
 if [ ! $cov == "none" ]; then singularity_binds=$(echo "$singularity_binds -B $(dirname $cov)"); fi
 if [ ! $cov == "none" ]; then while read line || [ -n "$line" ]; do
 	type="$(echo $line | cut -f1 -d",")"
@@ -224,9 +208,10 @@ if [ ! $cov == "none" ]; then while read line || [ -n "$line" ]; do
 done < $cov; fi;
 
 # Run snakemake workflow
-echo "Starting Snakemake workflow for $mode reads and $proc multi-threading instances..."
+echo "Starting Snakemake workflow for $sample with $mode reads and $proc multi-threading instances..."
 snakemake $dryrun $touch --software-deployment-method conda $apptainer --apptainer-args "$singularity_binds" --cores $proc --resources usage=100 --rerun-incomplete --nolock -s $snakefile --configfile $config -R $rule --until $rule --config \
-  sing=$sing sample=$sample loc=$loc fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov assembler=$assembler custom_assembly=$custom_assembly assembly_info=$assembly_info myloasm_ovlp=$myloasm_min_ovlp myloasm_cov=$myloasm_min_cov myloasm_extra=$myloasm_extra \
-  flye_ovlp=$flye_min_ovlp flye_cov=$flye_min_cov medaka_status=$medaka_status medak_mod_pol=$medak_mod_pol curation_status=$curation_status tiara_status=$tiara_status binmode=$binmode min_contig_len=$min_contig_len min_contig_cov=$min_contig_cov \
-	min_mag_len=$min_mag_len semibin_mod=$semibin_mod cleanup_status=$cleanup_status apptainer_status=$apptainer_status env_1=$env_1 env_2=$env_2 env_3=$env_3 env_4=$env_4 env_5=$env_5 env_6=$env_6 env_7=$env_7 env_8=$env_8 env_9=$env_9 $extra
+  sing=$sing sample=$sample loc=$loc fastq=$fastq proc=$proc mode=$mode reads_diffcov=$cov assembler=$assembler custom_assembly=$custom_assembly assembly_info=$assembly_info asm_extra=$asm_extra \
+  medaka_status=$medaka_status medak_mod_pol=$medak_mod_pol curation_status=$curation_status rename_status=$rename_status eukfilt_status=$eukfilt_status tiara_status=$tiara_status binmode=$binmode min_contig_len=$min_contig_len min_prok_cov=$min_prok_cov min_euk_cov=$min_euk_cov prok_status=$prok_status euk_status=$euk_status min_compl_euk=$min_compl_euk \
+	min_prok_len=$min_prok_len min_euk_len=$min_euk_len semibin_mod=$semibin_mod lorbin_status=$lorbin_status skip_metabat2_euk=$skip_metabat2_euk skip_quickbin_euk=$skip_quickbin_euk skip_vamb_euk=$skip_vamb_euk skip_semibin2_euk=$skip_semibin2_euk skip_remag_euk=$skip_remag_euk cleanup_status=$cleanup_status apptainer_status=$apptainer_status \
+  env_1=$env_1 env_2=$env_2 env_3=$env_3 env_4=$env_4 env_5=$env_5 env_6=$env_6 env_7=$env_7 env_8=$env_8 env_9=$env_9 env_10=$env_10 $extra 2> >(stdbuf -oL grep -Ev "here-document|While bind mounting|underlay of" >&2)
 exit 0

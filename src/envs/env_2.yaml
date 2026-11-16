@@ -1,13 +1,71 @@
+name: env_2
 channels:
-  - defaults
   - conda-forge
   - bioconda
+  - defaults
 dependencies:
+  - _openmp_mutex=4.5
+  - binutils_impl_linux-64=2.46.1
+  - boost-cpp=1.85.0
+  - bzip2=1.0.8
+  - c-ares=1.34.8
+  - ca-certificates=2026.7.22
+  - cmake=4.3.2
   - flye=2.9.6
-  - minimap2=2.30
-  - samtools=1.22
-  - seqkit=2.10.0
-  - metabat2=2.18
-  - boost=1.85
+  - gcc_impl_linux-64=16.2.0
+  - htslib=1.23.1
+  - icu=75.1
+  - k8=1.2
+  - kernel-headers_linux-64=6.12.0
+  - keyutils=1.6.3
+  - krb5=1.22.2
+  - ld_impl_linux-64=2.46.1
+  - libboost=1.85.0
+  - libboost-devel=1.85.0
+  - libboost-headers=1.85.0
+  - libcurl=8.21.0
+  - libdeflate=1.25
+  - libedit=3.1.20250104
+  - libev=4.33
+  - libexpat=2.8.1
+  - libffi=3.7.0
+  - libgcc=16.2.0
+  - libgcc-devel_linux-64=16.2.0
+  - libgcc-ng=16.2.0
+  - libgomp=16.2.0
+  - liblzma=5.8.3
+  - liblzma-devel=5.8.3
+  - libmpdec=4.0.0
+  - libnghttp2=1.68.1
+  - libpython=3.13.15
+  - libsanitizer=16.2.0
+  - libsqlite=3.53.4
+  - libssh2=1.11.1
+  - libstdcxx=16.2.0
+  - libstdcxx-devel_linux-64=16.2.0
+  - libstdcxx-ng=16.2.0
+  - libuuid=2.42.3
+  - libuv=1.52.1
+  - libxcrypt=4.4.38
+  - libzlib=1.3.2
+  - metabat2=2.18_23_gc869c52
+  - minimap2=2.31
+  - ncurses=6.6
+  - openssl=3.6.4
+  - perl=5.32.1
+  - pip=26.2.1
+  - python=3.13.15
+  - python_abi=3.13
+  - readline=8.3
+  - rhash=1.4.6
   - rust=1.88.0
-  - cmake
+  - rust-std-x86_64-unknown-linux-gnu=1.88.0
+  - samtools=1.23.1
+  - seqkit=2.13.0
+  - sysroot_linux-64=2.39
+  - tk=8.6.13
+  - tzdata=2026c
+  - xz=5.8.3
+  - xz-gpl-tools=5.8.3
+  - xz-tools=5.8.3
+  - zstd=1.5.7

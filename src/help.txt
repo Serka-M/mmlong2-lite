@@ -1,0 +1,63 @@
+ 
+              █                   ▄▀▀▀▄      █ ▄  █
+  █▀▄▀▄ █▀▄▀▄ █ ▄▀▀▀▄ █▀▀▀▄ ▄▀▀▀▄     █      █ ▄ ▀█▀▀ ▄▀▀▀▄
+  █ █ █ █ █ █ █ █   █ █   █ █   █   ▄▀  ▄▄▄  █ █  █   █▀▀▀▀
+  █ █ █ █ █ █ █ ▀▄▄▄▀ █   █ ▀▄▄▄█ █▄▄▄▄      █ █  ▀▄▄ ▀▄▄▄▀
+                            ▄▄▄▄▀
+  ──────────────────────────────────────────────────────────
+    Long-read genome-resolved metagenomics pipeline v$version        
+
+MAIN SETTINGS:
+-np	--nanopore_reads	Path to Nanopore reads (default: $fastq)
+-pb	--pacbio_reads		Path to PacBio HiFi reads (default: $fastq)
+-o	--output_dir		Output directory name (default: $sample)
+-p	--processes		Number of processes/multi-threading (default: $proc)
+
+OPTIONAL SETTINGS:
+-bin	--binning_mode		Run pipeline with a specified prokaryote binning mode (e.g. ${binmodes[*]})
+-cov 	--coverage		CSV dataframe for differential coverage binning (e.g. NP/PB/IL,/path/to/reads.fastq)
+-run	--run_until		Run pipeline until a specified stage completes (e.g. ${stages[*]/$stage})
+-tmp	--temporary_dir		Directory for temporary files (default: $tmp)
+-fly	--use_metaflye		Use metaFlye for metagenomic assembly (default: use $assembler)
+-dbg	--use_metamdbg		Use metaMDBG for metagenomic assembly (default: use $assembler)
+-myl	--use_myloasm		Use myloasm for metagenomic assembly (default: use $assembler)
+-ca	--custom_assembly	Use a custom assembly (default: use $assembler)
+-cai	--custom_assembly_info	Optional assembly information file (metaFlye format) for custom assembly
+-med	--use_medaka		Use Medaka for polishing Nanopore assemblies (default: skip Medaka)
+-mm	--medaka_model		Medaka polishing model (default: $medak_mod_pol)
+-scr	--skip_curation		Skip assembly curation and removal of misassemblies (default: run curation)
+-srn	--skip_rename		Skip renaming contigs to output name (default: rename contigs)
+-who	--use_whokaryote	Use Whokaryote for identifying eukaryotic contigs (default: use Tiara)
+-sef	--skip_eukfilt		Skip filtering of eukaryotic contigs (default: run eukaryote filter)
+-sem	--semibin_model		Binning model for SemiBin (default: $semibin_mod)
+-mcl	--min_contig_len	Minimum contig length for binning (default: $min_contig_len bp)
+-mpc	--min_prok_cov		Minimum contig coverage for prokaryote binning (default: $min_prok_cov)
+-mlp	--min_len_prok		Minimum prokaryotic bin size (default: $min_prok_len bp)
+-lrb	--use_lorbin		Use LorBin over COMEBin for iterative binning (default: use COMEBin)
+-scl	--skip_cleanup		Skip cleanup of workflow intermediate files
+-env	--conda_envs_only	Use conda environments instead of container (default: use container)
+-h	--help			Print help information
+-v	--version		Print workflow version number
+
+EUKARYOTE BINNING SETTINGS:
+-euk	--bin_eukaryote		Run eukaryotic bin recovery (default: skip eukaryote recovery)
+-spk	--skip_prokaryote	Skip prokaryotic bin recovery (default: run prokaryote recovery)
+-mec	--min_euk_cov		Minimum contig coverage for eukaryote binning (default: $min_euk_cov)
+-mle	--min_len_euk		Minimum eukaryotic bin size (default: $min_euk_len bp)
+-mce	--min_compl_euk		Minimum eukaryotic bin completness by EukCC (default: ${min_compl_euk}%)
+-sme	--skip_metabat2_euk	Skip MetaBAT2 binner for eukaryote binning (default: run MetaBAT2)
+-sqe	--skip_quickbin_euk	Skip QuickBin binner for eukaryote binning (default: run QuickBin)
+-sve	--skip_vamb_euk		Skip VAMB binner for eukaryote binning (default: run VAMB)
+-sse	--skip_semibin2_euk	Skip SemiBin2 binner for eukaryote binning (default: run SemiBin2)
+-sre	--skip_remag_euk	Skip REMAG binner for eukaryote binning (default: run REMAG)
+
+ADVANCED SETTINGS:
+-n	--dryrun		Print summary of jobs for the Snakemake workflow
+-t	--touch			Touch Snakemake output files
+-r	--rule			Run specified Snakemake rule
+-x	--extra_inputs		Extra inputs for Snakemake config file
+-xa	--extra_asm		Extra inputs for assembler (comma-separated)
+-xbp    --extra_bind_path	Extra bind paths for container (default: $sing_bind)
+
+Documentation and issues: https://github.com/Serka-M/mmlong2-lite
+Developed at Aalborg University, Denmark

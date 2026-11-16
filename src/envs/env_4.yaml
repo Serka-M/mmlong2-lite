@@ -1,7 +1,13 @@
+name: env_4
 channels:
-  - defaults
   - conda-forge
   - bioconda
+  - defaults
 dependencies:
-  - metamdbg=1.2
-  - myloasm=0.2.0
+  - _openmp_mutex=4.5
+  - libgcc=16.2.0
+  - libgomp=16.2.0
+  - libstdcxx=16.2.0
+  - libzlib=1.3.2
+  - metamdbg=1.4
+  - myloasm=0.7.0
