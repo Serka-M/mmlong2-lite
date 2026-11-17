@@ -53,7 +53,7 @@ def get_read_type(mode):
     else: return "NP"
 
 def get_splits(proc,medaka_split):
-    if int(proc/4) < medaka_split: return int(proc/4)
+    if int(proc/4) < medaka_split: return max(1, int(proc/4))
     else: return medaka_split
 
 def get_contigs():	
