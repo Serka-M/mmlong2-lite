@@ -166,6 +166,8 @@ if [[ "$sample" = *"/"* ]]; then if [[ "$sample" = /* ]]; then loc="$(dirname $s
 if [[ ! "$fastq" = /* ]]; then fastq="$(pwd)/$fastq"; fi
 if [[ ! "$tmp" = /* ]]; then tmp="$(pwd)/$tmp"; fi
 if [[ ! "$cov" = /* && ! "$cov" = "none" ]]; then cov="$(pwd)/$cov"; fi
+if [[ ! "$custom_assembly" = /* && ! "$custom_assembly" = "FALSE" ]]; then custom_assembly="$(pwd)/$custom_assembly"; fi
+if [[ ! "$assembly_info" = /* && ! "$assembly_info" = "FALSE" ]]; then assembly_info="$(pwd)/$assembly_info"; fi
 
 # Configure cache, temporary file paths, log verbosity, and locale
 if [ ! -d ".pycache" ]; then mkdir .pycache; fi
