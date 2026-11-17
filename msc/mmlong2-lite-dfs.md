@@ -5,11 +5,11 @@
 | Category | Description |
 | --- | --- |
 | bin | Genome bin (MAG) identifier |
-| completeness_checkm1 | Genome bin completeness estimate, reported by CheckM |
-| contamination_checkm1 | Genome bin contamination estimate, reported by CheckM |
+| completeness_checkm1 | Genome bin completeness estimate (%), reported by CheckM |
+| contamination_checkm1 | Genome bin contamination estimate (%), reported by CheckM |
 | strain_heterogeneity_checkm1 | Genome bin strain heterogeneity index, reported by CheckM |
-| completeness_checkm2 | Genome bin completeness estimate, reported by CheckM2 |
-| contamination_checkm2 | Genome bin contamination estimate, reported by CheckM2 |
+| completeness_checkm2 | Genome bin completeness estimate (%), reported by CheckM2 |
+| contamination_checkm2 | Genome bin contamination estimate (%), reported by CheckM2 |
 | model_checkm2 | Model used for the completeness estimate (general or specific), reported by CheckM2 |
 | coding_density_checkm2 | Genome bin coding density (fraction), reported by CheckM2 |
 | contigs | Number of contigs, reported by Quast |
@@ -20,8 +20,8 @@
 | contig_n90 | Genome bin N90 (bp), reported by Quast |
 | [aun](http://lh3.github.io/2020/04/08/a-new-metric-on-assembly-contiguity) | Nx area under the curve, reported by Quast |
 | n_per_100kb | Rate of Ns in a genome bin per 100 kbp, reported by Quast |
-| cov | Genome bin coverage, reported by CoverM |
-| r_abund | Genome bin relative abundance (%), reported by CoverM |
+| cov | Genome bin mean coverage for the main read dataset, reported by CoverM |
+| r_abund | Genome bin relative abundance (%) for the main read dataset, reported by CoverM |
 | wf_name | Workflow output name |
 | wf_read_mode | Workflow long-read mode |
 | wf_bin_mode | Workflow binning mode |
@@ -35,8 +35,8 @@
 | Category | Description |
 | --- | --- |
 | bin | Eukaryotic genome bin (MAG) identifier |
-| completeness_eukcc | Genome bin completeness estimate, reported by EukCC |
-| contamination_eukcc | Genome bin contamination estimate, reported by EukCC |
+| completeness_eukcc | Genome bin completeness estimate (%), reported by EukCC |
+| contamination_eukcc | Genome bin contamination estimate (%), reported by EukCC |
 | lineage_eukcc | Lineage of the marker gene set used for the genome bin as dash-separated NCBI taxonomy IDs, reported by EukCC |
 | lineage_qc | Status of the marker gene set quality check, reported by EukCC (PASS or FAIL) |
 | lineage_name | Name of the major eukaryotic group of the genome bin (e.g. Stramenopiles), derived from the EukCC lineage |
@@ -48,8 +48,8 @@
 | contig_n90 | Genome bin N90 (bp), reported by Quast |
 | [aun](http://lh3.github.io/2020/04/08/a-new-metric-on-assembly-contiguity) | Nx area under the curve, reported by Quast |
 | n_per_100kb | Rate of Ns in a genome bin per 100 kbp, reported by Quast |
-| cov | Genome bin coverage, reported by CoverM |
-| r_abund | Genome bin relative abundance (%), reported by CoverM |
+| cov | Genome bin mean coverage for the main read dataset, reported by CoverM |
+| r_abund | Genome bin relative abundance (%) for the main read dataset, reported by CoverM |
 | wf_name | Workflow output name |
 | wf_read_mode | Workflow long-read mode |
 | wf_bin_mode | Workflow binning mode |
@@ -142,7 +142,7 @@
 | binning | aggregate | Aggregation of the recovered bins |
 | binning | qc2 | Secondary quality control of the recovered bins |
 | summary | cov | Genome coverage and relative abundance calculation with CoverM |
-| summary | stats | Genome summary statistic calculation with QUAST |
+| summary | stats | Genome summary statistic calculation with Quast |
 | cleanup | prebin | Removal of temporary files generated before binning |
 | cleanup | postbin | Removal of temporary files generated after binning |
 
